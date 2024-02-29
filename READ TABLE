@@ -1,0 +1,52 @@
+REPORT ZTEST2.
+
+DATA: LT_TABLE TYPE TABLE OF ZPAYROLL, "DECLARACAO DE TABELA INTERNA."
+      LS_STRUCT TYPE ZPAYROLL,         "DECLARACAO DE ESTRUTURA."
+      LV_INDEX TYPE I.                 "DECLARACAO DE VARIAVEL NUMERICA PARA RECEBER O VALOR DE UM ÍNDICE."
+
+LV_INDEX = 2. "VALOR DO ÍNDICE RECEBE 2."
+
+SELECT * FROM ZPAYROLL INTO TABLE LT_TABLE. "TODOS OS DADOS DA TABELA TRANSPARENTE SAO SELECIONADOS E INSERIDOS NA TABELA INTERNA."
+
+"------------------------------------------------------------------------------------------------------------------------------------------
+"------------------------------------------------------------------------------------------------------------------------------------------
+"[LER ENTRADA POR UMA CHAVE]"
+READ TABLE LT_TABLE INTO LS_STRUCT WITH KEY ID = 16.    "LER A LINHA DA TABELA INTERNA ONDE O ID É 1."
+IF SY-SUBRC = 0.                                        "SE A INTRUÇÃO FOR BEM SUCEDIDA...
+  WRITE LS_STRUCT-DEDUCTIONS.                           "ESCREVA O VALOR DAS DEDUCOES SALARIAIS ONDE A LINHA FOI INSERIDA NA ESTRUTURA."
+ELSE.                                                   "DO CONTRÁRIO...
+  WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
+ENDIF.                                                  "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"[LER A PRIMEIRA ENTRADA]"
+READ TABLE LT_TABLE INTO LS_STRUCT INDEX 1.             "LER O PRIMEIRO ELEMENTO DA TABELA TRATANDO-A COMO UM ARRAY."
+IF SY-SUBRC = 0.                                        "SE A INTRUÇÃO FOR BEM SUCEDIDA...
+  WRITE LS_STRUCT-DEDUCTIONS.                           "ESCREVA O VALOR DAS DEDUCOES SALARIAIS ONDE A LINHA FOI INSERIDA NA ESTRUTURA."
+ELSE.                                                   "DO CONTRÁRIO...
+  WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
+ENDIF.                                                  "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"[LER A ENTRADA POR ÍNDICE NUMÉRICO]"
+READ TABLE LT_TABLE INTO LS_STRUCT INDEX LV_INDEX.      "LER O PRIMEIRO ELEMENTO DA TABELA TRATANDO-A COMO UM ARRAY."
+IF SY-SUBRC = 0.                                        "SE A INTRUÇÃO FOR BEM SUCEDIDA...
+  WRITE LS_STRUCT-DEDUCTIONS.                           "ESCREVA O VALOR DAS DEDUCOES SALARIAIS ONDE A LINHA FOI INSERIDA NA ESTRUTURA."
+ELSE.                                                   "DO CONTRÁRIO...
+  WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
+ENDIF.                                                  "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"[LER A ENTRADA POR PESQUISA BINÁRIA]"
+READ TABLE LT_TABLE INTO LS_STRUCT WITH KEY ID = '2' BINARY SEARCH. "LER A LINHA DA TABELA INTERNA ONDE O ID É 2 USANDO PESQUISA BINÁRIA."
+IF SY-SUBRC = 0.                                                    "SE A INTRUÇÃO FOR BEM SUCEDIDA...
+  WRITE LS_STRUCT-DEDUCTIONS.                                       "ESCREVA O VALOR DAS DEDUCOES SALARIAIS ONDE A LINHA FOI INSERIDA NA ESTRUTURA."
+ELSE.                                                               "DO CONTRÁRIO...
+  WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'.             "ESCREVA A MENSAGEM."
+ENDIF.                                                              "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"-------------------------------------------------------------------------------------------------------------------------------------------
