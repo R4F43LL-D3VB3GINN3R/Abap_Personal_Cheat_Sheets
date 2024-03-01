@@ -1,3 +1,6 @@
+"------------------------------------------------------------------------------------------------------------------------------------------
+"------------------------------------------------READ TABLE TUTORIAL-----------------------------------------------------------------------
+"------------------------------------------------------------------------------------------------------------------------------------------
 REPORT ZTEST2.
 
 DATA: LT_TABLE TYPE TABLE OF ZPAYROLL, "DECLARACAO DE TABELA INTERNA."
@@ -45,8 +48,118 @@ READ TABLE LT_TABLE INTO LS_STRUCT WITH KEY ID = '2' BINARY SEARCH. "LER A LINHA
 IF SY-SUBRC = 0.                                                    "SE A INTRUÇÃO FOR BEM SUCEDIDA...
   WRITE LS_STRUCT-DEDUCTIONS.                                       "ESCREVA O VALOR DAS DEDUCOES SALARIAIS ONDE A LINHA FOI INSERIDA NA ESTRUTURA."
 ELSE.                                                               "DO CONTRÁRIO...
-  WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'.             "ESCREVA A MENSAGEM."
+  WRITE / 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'.           "ESCREVA A MENSAGEM."
 ENDIF.                                                              "ENCERRA ESTRUTURA DE CONTROLE."
+
+SKIP 1.
+
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"-------------------------------------------------------------------------------------------------------------------------------------------
+
+"[EXERCÍCIO: GERENCIAMENTO DE FOLHA DE PAGAMENTO]"
+
+"VOCÊ FOI ENCARREGADO DE DESENVOLVER UM PROGRAMA ABAP PARA GERENCIAR OS DADOS DE FOLHA DE PAGAMENTO
+"DE UMA EMPRESA UTILIZANDO INFORMAÇÕES DA TABELA PAYROLL.
+"ESTA TABELA CONTÉM INFORMAÇÕES BÁSICAS SOBRE OS FUNCIONáRIOS, INCLUINDO DADOS
+"RELEVANTES PARA A FOLHA DE PAGAMENTO.
+
+"SEU PROGRAMA DEVE SER CAPAZ DE EXECUTAR AS SEGUINTES TAREFAS:
+
+"LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO O MAIOR NUMERO DE ID MAIS PRóXIMO DE 100.
+"LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NúMERO DE PESSOAL íMPAR MAIS PRóXIMO DE 100.
+"LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NúMERO DE PESSOAL PAR MAIS PRóXIMO DO PRIMEIRO FUNCIONáRIO NA TABELA.
+"LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NúMERO DE PESSOAL íMPAR MAIS PRóXIMO DO PRIMEIRO FUNCIONáRIO NA TABELA.
+"REALIZAR UMA PESQUISA BINÁRIA PARA ENCONTRAR AS DEDUçõES SALARIAIS DO FUNCIONáRIO COM O NÚMERO DE PESSOAL PAR MAIS PRÓXIMO DE 50 E EXIBI-LAS.
+"REALIZAR UMA PESQUISA BINÁRIA PARA ENCONTRAR AS DEDUçõES SALARIAIS DO FUNCIONáRIO COM O NÚMERO DE PESSOAL íMPAR MAIS PRÓXIMO DE 50 E EXIBI-LAS.
+"CERTIFIQUE-SE DE LIDAR ADEQUADAMENTE COM CASOS EM QUE OS DADOS NãO SãO ENCONTRADOS E CONSIDERE A EFICIêNCIA DO ALGORITMO AO REALIZAR AS OPERAÇÕES DE PESQUISA BINÁRIA.
+
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"-------------------------------------------------------------------------------------------------------------------------------------------
+
+"LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO O MAIOR NUMERO DE ID MAIS PRóXIMO DE 100."
+
+DATA: LT_TABLE2 TYPE TABLE OF ZPAYROLL, "TABELA INTERNA DO TIPO DA TABELA TRANSPARENTE DE PAYROLL."
+      LS_STRUCT2 TYPE ZPAYROLL,         "ESTRUTURA LOCAL DO TIPO DA TABELA TRANSPARENTE DE PAYROLL."
+      GREATERTHAN TYPE ZID,             "VARIÁVEL (MAIOR QUE), CRIADA PARA RECEBER O VALOR DO MAIOR ID, MENOR DO QUE 100."
+      BOOL TYPE BOOLEAN.                "VARIÁVEL BOLEANA PARA CONFIRMAR CONDIÇÃO."
+
+GREATERTHAN = 0. "VARIÁVEL RECEBE ZERO COMO VALOR STANDARD."
+
+SELECT * FROM ZPAYROLL INTO TABLE LT_TABLE2. "SELECIONE TODOS OS DADOS DA TABELA TRANSPARENTE E INSERE NA TABELA INTERNA."
+SORT LT_TABLE2 BY ID.                        "ORDENA TABELA INTERNA POR ID."
+
+PARAMETERS: ID TYPE ZID. "LER A VARIÁVEL ID DO TIPO DO ID DA TABELA TRANSPARENTE."
+
+READ TABLE LT_TABLE2 INTO LS_STRUCT2 WITH KEY ID = ID. "ITERA A TABELA INTERNA USANDO A ESTRUTURA."
+  IF SY-SUBRC = 0.                                     "SE A INTRUÇÃO FOR BEM SUCEDIDA...
+   LOOP AT LT_TABLE2 INTO LS_STRUCT2.                  "ITERA A TABELA INTERNA USANDO A ESTRUTURA."
+    IF LS_STRUCT2-ID <= 100.                           "SE O ID DA ESTRUTURA FOR MENOR DO QUE 100...
+      IF ID < LS_STRUCT2-ID.                           "SE O ID FOR MENOR DO QUE O ID DA ESTRUTURA...
+        IF LS_STRUCT2-ID > GREATERTHAN.                "E SE O ID DA ESTRUTURA FOR MAIOR DO QUE A VARIÁVEL DE COMPARAÇÃO...
+          GREATERTHAN = LS_STRUCT2-ID.                 "VARIÁVEL DE COMPARAÇÃO RECEBE O ID DA ESTRUTURA."
+          BOOL = 'X'.                                  "DEFINE A BOLEANA COMO TRUE."
+        ENDIF.                                         "ENCERRA ESTRUTURA DE CONTROLE."
+      ELSE.                                            "SE O ID FOR MAIOR DO QUE O ID DA ESTRUTURA...
+        BOOL = ''.                                     "BOLEANA RECEBE FALSE."
+      ENDIF.                                           "ENCERRA ESTRUTURA DE CONTROLE."
+    ENDIF.                                             "ENCERRA ESTRUTURA DE CONTROLE."
+   ENDLOOP.                                            "ENCERRA O LOOP."
+ ENDIF.                                                "ENCERRA ESTRUTURA DE CONTROLE."
+
+IF SY-SUBRC = 0.                                                                                                   "SE EXISTE ID NA TABELA...
+  IF BOOL = 'X'.                                                                                                   "E SE A BOLEANA FOR TRUE."
+    WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO COM MAIOR NUMERO DE ID MAIS PRóXIMO DE 100:', LS_STRUCT2-DEDUCTIONS. "EXIBE A MENSAGEM COM A DEDUÇÃO SALARIAL DO FUNCIONÁRIO."
+  ELSE.                                                                                                            "DO CONTRÁRIO...
+    WRITE: / 'NÃO FOI POSSÍVEL ENCONTRAR OS DADOS SOLICITADOS.'.                                                   "EXIBE A MENSAGEM."
+  ENDIF.                                                                                                           "ENCERRA ESTRUTURA DE CONTROLE.
+ELSE.                                                                                                              "SE NÃO HOUVER ID REFERENTE NA TABELA...
+  WRITE: / 'NÃO FOI POSSÍVEL ENCONTRAR OS DADOS SOLICITADOS.'.                                                     "EXIBE A MENSAGEM."
+ENDIF.                                                                                                             "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------------------------------------
+"-------------------------------------------------------------------------------------------------------------------------------------------
+
+"LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NúMERO DE PESSOAL íMPAR MAIS PRóXIMO DE 100.
+
+DATA: ODDNUM TYPE ZID,        "VARIÁVEL NUMÉRICA DO TIPO DO ID DA TABELA TRANSPARENTE."
+      GREATHERTHAN2 TYPE ZID, "VARIÁVEL (MAIOR QUE), CRIADA PARA RECEBER O VALOR DO MAIOR ID, MENOR DO QUE 100."
+      BOOL2 TYPE BOOLEAN.     "VARIÁVEL BOLEANA PARA CONFIRMAR CONDIÇÃO."
+
+TYPES: BEGIN OF GS_STRUCT3,            "CRIAÇÃO DE ESTRUTURA TYPES."
+          ID TYPE ZID,                 "ID DA ESTRUTURA RECEBE O TIPO DO ID DA TABELA TRANSPARENTE."
+          DEDUCTIONS TYPE ZDEDUCTIONS, "DEDUCOES DA ESTRUTURA RECEBE O TIPO DE DEDUCOES DA TABELA TRANSPARENTE."
+       END OF GS_STRUCT3.              "ENCERRAMENTO DA ESTRUTURA."
+
+DATA: LT_TABLE3 TYPE TABLE OF GS_STRUCT3, "TABELA INTERNA DO TIPO DA ESTRUTURA TYPES."
+      LS_STRUCT3 LIKE LINE OF LT_TABLE3.  "ESTRUTURA LOCAL DO TIPO LINHA DA MINHA TABELA INTERNA.
+                                          "ESTRUTURA LOCAL TAMBÉM PODERIA SER DO TIPO DA ESTRUTURA TYPES."
+
+ODDNUM = ID MOD 2. "VARIÁVEL RECEBE O RESTO DO ID DIVIDIDO POR 2."
+
+SELECT ID DEDUCTIONS FROM ZPAYROLL INTO TABLE LT_TABLE3.                "SELECIONA TODOS OS DADOS DA COLUNA ID E DEDUCTIONS DA TABELA TRANSPARENTE E INSERE NA TABELA INTERNA."
+                                                                        "OU...
+SELECT ID, DEDUCTIONS FROM ZPAYROLL INTO TABLE @DATA(LT_TABLE4_INLINE). "COMANDO INLINE DISPENSA A CRIAÇÃO DA ESTRUTURA TYPES E DA TABELA INTERNA, DECLARANDO UMA TABELA INTERNA DINÂMICA QUE SE ACOMODA A INSERÇÃO DOS DADOS."
+                                                                        
+SORT LT_TABLE3 BY ID. "ORDENA A TABELA INTERNA POR ID."
+
+READ TABLE LT_TABLE3 INTO LS_STRUCT3 WITH KEY ID = ID.          "LÊ A TABELA INTERNA USANDO A ESTRUTURA PROCURANDO PELO VALOR DO ID INSERIDO NOS PARAMETERS."
+  IF SY-SUBRC = 0.                                              "SE A INSTRUÇÃO FOR BEM SUCEDIDA...
+    LOOP AT LT_TABLE3 INTO LS_STRUCT3.                          "ITERA A TABELA INTERNA."
+      IF ID <= 100.                                             "SE O ID FOR MENOR OU IGUAL A 100...
+        IF ODDNUM NE 0.                                         "SE O RESTO DA DIVISÃO FOR DIFERENTE DE ZERO...
+          GREATHERTHAN2 = LS_STRUCT3-ID.                        "A VARIÁVEL RECEBE O NÚMERO DO ID.
+          BOOL2 = 'X'.                                          "DEFINE A BOLEANA COMO TRUE."
+        ENDIF.                                                  "ENCERRA ESTRUTURA DE CONTROLE."
+      ENDIF.                                                    "ENCERRA ESTRUTURA DE CONTROLE."
+    ENDLOOP.                                                    "ENCERRA O LOOP."
+  ELSE.                                                         "SE O ID INSERIDO NÃO EXISTIR NA TABELA INTERNA...
+    WRITE / 'NÃO FOI POSSÍVEL ENCONTRAR OS DADOS SOLICITADOS.'. "EXIBE A MENSAGEM."
+    BOOL2 = ''.                                                 "DEFINE A BOLEANA COMO FALSE."
+  ENDIF.                                                        "ENCERRA ESTRUTURA DE CONTROLE."
+
+IF BOOL2 = 'X'.                                                                                                  "SE A BOLEANA FOR TRUE." 
+  WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO COM MAIOR NUMERO DE ID MAIS PRóXIMO DE 100:', LS_STRUCT2-DEDUCTIONS. "EXIBE A MENSAGEM."
+ENDIF.                                                                                                           "ENCERRA ESTRUTURA DE CONTROLE."
 
 "-------------------------------------------------------------------------------------------------------------------------------------------
 "-------------------------------------------------------------------------------------------------------------------------------------------
