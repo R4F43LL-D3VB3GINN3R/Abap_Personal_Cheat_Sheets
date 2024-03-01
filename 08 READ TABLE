@@ -3,6 +3,30 @@
 "------------------------------------------------------------------------------------------------------------------------------------------
 REPORT ZTEST2.
 
+*" Transparent Table - ZPAYROLL
+*"-------------------------------------------------------------------------------
+*"-------------------------------------------------------------------------------
+*"
+*" [FIELD]     [KEY]   [DATA ELEMENT]    [DATA TYPE]    [LENGTH]    [SHORT DESCRIPTION]
+*" MANDT         X         MANDT            CLNT           3               Client
+*" ID            X         ZID              INT1           3               Id Employee
+*" BRUTESAL                ZBRUTESAL        DEC            6               Brute Salary
+*" LIQSAL                  ZLIQSAL          DEC            6               Liquid Salary
+*" HEALTHPLAN              ZHEALTHPLAN      CHAR           1               Health Plan
+*" SINDICAL                ZSINDICAL        CHAR           1               Sindical Services
+*" TRANSPORT               ZTRANSPORT       CHAR           1               Ticket Transport
+*" EXTRAHOUR               ZEXTRAHOUR       INT1           3               Extra Hour
+*" DEDUCTIONS              ZDEDUCTIONS      DEC            6               Deductions
+*" SECSOCIAL               ZSECOSCIAL       DEC            6               Security Social
+*" IRS                     ZIRS             DEC            6               IRS
+*" BONUS                   ZBONUS           DEC            6               Bonus
+*" SUBHOLYDAYS             ZSUBHOLYDAYS     DEC            1               Holydays
+*" NOPAYLEAVE              ZNOPAYLEAVE      INT1           3               No Pay Leave
+*" WORKSHIFT               ZWORKSHIFT       CHAR           5               Work Shift
+*"
+*"-------------------------------------------------------------------------------
+*"-------------------------------------------------------------------------------
+
 DATA: LT_TABLE TYPE TABLE OF ZPAYROLL, "DECLARACAO DE TABELA INTERNA."
       LS_STRUCT TYPE ZPAYROLL,         "DECLARACAO DE ESTRUTURA."
       LV_INDEX TYPE I.                 "DECLARACAO DE VARIAVEL NUMERICA PARA RECEBER O VALOR DE UM ÍNDICE."
@@ -69,8 +93,8 @@ SKIP 1.
 "LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NúMERO DE PESSOAL íMPAR MAIS PRóXIMO DE 100.
 "LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NúMERO DE PESSOAL PAR MAIS PRóXIMO DO PRIMEIRO FUNCIONáRIO NA TABELA.
 "LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NúMERO DE PESSOAL íMPAR MAIS PRóXIMO DO PRIMEIRO FUNCIONáRIO NA TABELA.
-"REALIZAR UMA PESQUISA BINÁRIA PARA ENCONTRAR AS DEDUçõES SALARIAIS DO FUNCIONáRIO COM O NÚMERO DE PESSOAL PAR MAIS PRÓXIMO DE 50 E EXIBI-LAS.
-"REALIZAR UMA PESQUISA BINÁRIA PARA ENCONTRAR AS DEDUçõES SALARIAIS DO FUNCIONáRIO COM O NÚMERO DE PESSOAL íMPAR MAIS PRÓXIMO DE 50 E EXIBI-LAS.
+"REALIZAR UMA PESQUISA BINÁRIA PARA ENCONTRAR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NÚMERO DE PESSOAL PAR MAIS PRÓXIMO DE 50 E EXIBI-LAS.
+"REALIZAR UMA PESQUISA BINÁRIA PARA ENCONTRAR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NÚMERO DE PESSOAL íMPAR MAIS PRÓXIMO DE 50 E EXIBI-LAS.
 "CERTIFIQUE-SE DE LIDAR ADEQUADAMENTE COM CASOS EM QUE OS DADOS NãO SãO ENCONTRADOS E CONSIDERE A EFICIêNCIA DO ALGORITMO AO REALIZAR AS OPERAÇÕES DE PESQUISA BINÁRIA.
 
 "-------------------------------------------------------------------------------------------------------------------------------------------
@@ -163,3 +187,5 @@ ENDIF.                                                                          
 
 "-------------------------------------------------------------------------------------------------------------------------------------------
 "-------------------------------------------------------------------------------------------------------------------------------------------
+
+"LER E EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O NúMERO DE PESSOAL PAR MAIS PRóXIMO DO PRIMEIRO FUNCIONáRIO NA TABELA.
