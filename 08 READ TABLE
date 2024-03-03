@@ -41,12 +41,12 @@ SELECT * FROM ZPAYROLL INTO TABLE LT_TABLE. "PREENCHENDO TABELA INTERNA."
 *"------------------------------------------------------------------------------------------------------------
 *"------------------------------------------------------------------------------------------------------------
 "[LER ENTRADA POR UMA CHAVE]"
-READ TABLE LT_TABLE INTO LS_STRUCT WITH KEY ID = 16.    "LER A LINHA DA TABELA INTERNA ONDE O ID É 1."
+READ TABLE LT_TABLE INTO LS_STRUCT WITH KEY ID = 2.    "LER A LINHA DA TABELA INTERNA ONDE O ID É 1."
 
-IF SY-SUBRC = 0.                                        "SE A INTRUÇÃO FOR BEM SUCEDIDA...
-  WRITE LS_STRUCT-DEDUCTIONS.                           "EXIBE A MENSAGEM.
+IF SY-SUBRC = 0.                                        "SE A INSTRUÇÃO FOR BEM SUCEDIDA...
+  "WRITE LS_STRUCT-DEDUCTIONS.                           "EXIBE A MENSAGEM.
 ELSE.                                                   "DO CONTRÁRIO...
-  WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
+  "WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
 ENDIF.                                                  "ENCERRA ESTRUTURA DE CONTROLE."
 
 *"------------------------------------------------------------------------------------------------------------
@@ -54,10 +54,10 @@ ENDIF.                                                  "ENCERRA ESTRUTURA DE CO
 "[LER A PRIMEIRA ENTRADA]"
 READ TABLE LT_TABLE INTO LS_STRUCT INDEX 1. "LER O PRIMEIRO ELEMENTO DA TABELA TRATANDO-A COMO UM ARRAY."
 
-IF SY-SUBRC = 0.                                        "SE A INTRUÇÃO FOR BEM SUCEDIDA...
-  WRITE LS_STRUCT-DEDUCTIONS.                           "EXIBE A MENSAGEM."
+IF SY-SUBRC = 0.                                        "SE A INSTRUÇÃO FOR BEM SUCEDIDA...
+  "WRITE LS_STRUCT-DEDUCTIONS.                           "EXIBE A MENSAGEM."
 ELSE.                                                   "DO CONTRÁRIO...
-  WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
+  "WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
 ENDIF.                                                  "ENCERRA ESTRUTURA DE CONTROLE."
 
 *"------------------------------------------------------------------------------------------------------------
@@ -65,10 +65,10 @@ ENDIF.                                                  "ENCERRA ESTRUTURA DE CO
 "[LER A ENTRADA POR ÍNDICE NUMÉRICO]"
 READ TABLE LT_TABLE INTO LS_STRUCT INDEX LV_INDEX. "LER O PRIMEIRO ELEMENTO DA TABELA COMO UM ARRAY."
 
-IF SY-SUBRC = 0.                                        "SE A INTRUÇÃO FOR BEM SUCEDIDA...
-  WRITE LS_STRUCT-DEDUCTIONS.                           "EXIBE A MENSAGEM.
+IF SY-SUBRC = 0.                                        "SE A INSTRUÇÃO FOR BEM SUCEDIDA...
+  "WRITE LS_STRUCT-DEDUCTIONS.                           "EXIBE A MENSAGEM.
 ELSE.                                                   "DO CONTRÁRIO...
-  WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
+  "WRITE 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
 ENDIF.                                                  "ENCERRA ESTRUTURA DE CONTROLE."
 
 *"------------------------------------------------------------------------------------------------------------
@@ -77,10 +77,10 @@ ENDIF.                                                  "ENCERRA ESTRUTURA DE CO
 READ TABLE LT_TABLE INTO LS_STRUCT WITH KEY ID = '2' BINARY SEARCH.
 "LER A LINHA DA TABELA INTERNA ONDE O ID É 2 USANDO PESQUISA BINÁRIA."
 
-IF SY-SUBRC = 0.                                          "SE A INTRUÇÃO FOR BEM SUCEDIDA...
-  WRITE LS_STRUCT-DEDUCTIONS.                             "EXIBE A MENSAGEM.
+IF SY-SUBRC = 0.                                          "SE A INSTRUÇÃO FOR BEM SUCEDIDA...
+  "WRITE LS_STRUCT-DEDUCTIONS.                             "EXIBE A MENSAGEM.
 ELSE.                                                     "DO CONTRÁRIO...
-  WRITE / 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
+  "WRITE / 'AS DEDUÇÕES SALARIAIS NÃO FORAM ENCONTRADAS.'. "ESCREVA A MENSAGEM."
 ENDIF.                                                    "ENCERRA ESTRUTURA DE CONTROLE."
 
 SKIP 1.
@@ -99,9 +99,9 @@ SKIP 1.
 
 "1 - EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONÁRIO COM O MAIOR NUMERO DE ID MENOR DO QUE 100."
 
-"2 - EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM ID O íMPAR MAIS PRóXIMO DE 100.
+"2 - EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM ID íMPAR MAIS PRóXIMO DE 100.
 
-"3 - EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM ID O PAR MAIS PRóXIMO DO PRIMEIRO FUNCIONáRIO NA TABELA.
+"3 - EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM ID PAR MAIS PRóXIMO DO PRIMEIRO FUNCIONáRIO NA TABELA.
 
 "4 - EXIBIR AS DEDUÇÕES SALARIAIS DO FUNCIONáRIO COM O ID íMPAR MAIS PRóXIMO DO PRIMEIRO FUNCIONáRIO.
 
@@ -128,6 +128,8 @@ SELECT MAX( ID ) FROM ZPAYROLL INTO MAXID.   "PREENCHENDO TABELA INTERNA."
 
 READ TABLE LT_TABLE2 INTO LS_STRUCT2 WITH KEY ID = MAXID. "PROCURA NA TABELA INTERNA O VALOR DO ID."
 
+WRITE / '1.........................................................'.
+
 IF SY-SUBRC = 0.   "SE A INSTRUÇÃO FOR BEM SUCEDIDA...
   IF MAXID >= 100. "E SE A VARIÁVEL FOR MENOR OU IGUAL A 100...
     WRITE / 'NÃO FOI POSSÍVEL ENCONTRAR OS DADOS SOLICITADOS.'. "EXIBE A MENSAGEM."
@@ -137,6 +139,7 @@ IF SY-SUBRC = 0.   "SE A INSTRUÇÃO FOR BEM SUCEDIDA...
 ELSE. "SE NÃO ACHAR ID NA TABELA INTERNA."
   WRITE / 'NÃO EXISTE ID NA TABELA.'. "EXIBE A MENSAGEM."
 ENDIF. "ENCERRA ESTRUTURA DE CONTROLE."
+WRITE / '..........................................................'.
 
 *"------------------------------------------------------------------------------------------------------------
 *"------------------------------------------------------------------------------------------------------------
@@ -176,7 +179,9 @@ WHILE INDEX < ENDINDEX.                             "ENQUANTO NÃO CHEGAR AO FIM
   ENDIF.                                            "ENCERRA ESTRUTURA DE CONTROLE."
 ENDWHILE.                                           "ENCERRA O CICLO."
 
- WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO', LS_STRUCT3-ID,'->', DEDUCTIONS1,'€'. "EXIBE A MENSAGEM."
+WRITE / '2.........................................................'.
+WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO', LS_STRUCT3-ID,'->', DEDUCTIONS1,'€'. "EXIBE A MENSAGEM."
+WRITE / '..........................................................'.
 
 *"------------------------------------------------------------------------------------------------------------
 *"------------------------------------------------------------------------------------------------------------
@@ -208,7 +213,9 @@ ENDWHILE.                                                 "ENCERRA O CICLO."
 
 LS_STRUCT4-ID = LS_STRUCT4-ID + 1. "CORREÇÃO PARA EVITAR UM NÚMERO NEGATIVO."
 
+WRITE / '3.........................................................'.
 WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO', ID4,'->', DEDUCTIONS2,'€'. "EXIBE A MENSAGEM."
+WRITE / '..........................................................'.
 
 *"------------------------------------------------------------------------------------------------------------
 *"------------------------------------------------------------------------------------------------------------
@@ -238,7 +245,9 @@ WHILE END5 > BEGIN5.                                       "ENQUANTO NÃO CHEGAR
   END5 = END5 - 1.                                         "DECREMENTA O ITERADOR."
 ENDWHILE.                                                  "ENCERRA O CICLO."
 
+WRITE / '4.........................................................'.
 WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO', ID5,'->', DEDUCTIONS5,'€'. "EXIBE A MENSAGEM."
+WRITE / '..........................................................'.
 
 *"------------------------------------------------------------------------------------------------------------
 *"------------------------------------------------------------------------------------------------------------
@@ -274,6 +283,7 @@ ENDWHILE.
 "DECREMENTA O ITERADOR."
 "ENCERRA O CICLO."
 
+WRITE / '5.........................................................'.
 WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO', ID6,'->', DEDUCTIONS6,'€'. "EXIBE A MENSAGEM."
 
 END6 = 0. "REINICIA A VARIÁVEL RECEBENDO O ZERO."
@@ -297,6 +307,7 @@ ENDWHILE.
 "ENCERRA O CICLO."
 
 WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO', ID6,'->', DEDUCTIONS6,'€'. "EXIBE A MENSAGEM."
+WRITE / '..........................................................'.
 
 *"------------------------------------------------------------------------------------------------------------
 *"------------------------------------------------------------------------------------------------------------
@@ -332,6 +343,7 @@ ENDWHILE.
 "DECREMENTA O ITERADOR."
 "ENCERRA O CICLO."
 
+WRITE / '6.........................................................'.
 WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO', ID7,'->', DEDUCTIONS7,'€'. "EXIBE A MENSAGEM."
 
 END7 = 0. "REINICIA A VARIÁVEL RECEBENDO O ZERO."
@@ -355,6 +367,7 @@ ENDWHILE.
 "ENCERRA O CICLO."
 
 WRITE: / 'DEDUÇÂO SALARIAL DO FUNCIONáRIO', ID7,'->', DEDUCTIONS7,'€'. "EXIBE A MENSAGEM."
+WRITE / '..........................................................'.
 
 *"------------------------------------------------------------------------------------------------------------
 *"------------------------------------------------------------------------------------------------------------
