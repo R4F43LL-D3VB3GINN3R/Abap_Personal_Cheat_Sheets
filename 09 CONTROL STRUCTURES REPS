@@ -1,0 +1,206 @@
+*&---------------------------------------------------------------------*
+*"------------------------------------------------------------------------------------------------------------
+*"--------------------------------ESTRUTURAS-DE-CONTROLE-DE-REPETIÇÃO-TUTORIAL--------------------------------
+*"------------------------------------------------------------------------------------------------------------
+*"RAFAEL-ALBUQUERQUE------------------------------------------------------------------------------------------
+*"04-03-2024--------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+REPORT ZTEST3.
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+
+" TRANSPARENT TABLE - PA0002. [HCM MODULE]
+
+TYPES: BEGIN OF TY_PA0002,       "ESTRUTURA TYPES.
+         PERNR   TYPE PERNR_D,   "NUMERO PESSOAL [ID]
+         VORNA   TYPE PAD_VORNA, "NOME
+         GBDAT   TYPE GBDAT,     "DATA DE NASCIMENTO
+         GESCH   TYPE GESCH,     "SEXO
+         NATIO   TYPE LAND1,     "NACIONALIDADE
+         FAMST   TYPE FAMST,     "ESTADO CIVIL
+         BEGDA   TYPE BEGDA,     "DATA DE INÍCIO DE VALIDADE
+         ENDDA   TYPE ENDDA,     "DATA DE TÉRMINO DE VALIDADE
+       END OF ty_PA0002.
+
+DATA: LT_DATA TYPE TABLE OF TY_PA0002, "TABELA INTERNA."
+      LS_DATA LIKE LINE OF LT_DATA.    "ESTRUTURA LOCAL."
+
+"SELECIONA OS CAMPOS DA TABELA TRANSPARENTE E INSERE NA TABELA INTERNA."
+SELECT PA0002~PERNR
+       PA0002~VORNA
+       PA0002~GBDAT
+       PA0002~GESCH
+       PA0002~NATIO
+       PA0002~FAMST
+       PA0002~BEGDA
+       PA0002~ENDDA FROM PA0002 INTO TABLE LT_DATA.
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+"[REPETIR POR QUANTIDADE DE VEZES DETERMINADA]"
+
+DATA: CONTADOR TYPE I. "VARIÁVEL INTEIRO PARA RECEBER CONTAGEM."
+
+CONTADOR = 0. "VARIÁVEL RECEBE VALOR INICIAL DE CONTAGEM."
+
+DO 10 TIMES.               "FAZER 10 VEZES...
+
+  WRITE / CONTADOR.        "ESCREVE O VALOR DO CONTADOR."
+
+  CONTADOR = CONTADOR + 1. "INCREMENTA O CONTADOR."
+
+ENDDO.                     "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+"[REPETIR ENQUANTO CONDIÇÃO É ESTABELECIDA]"
+
+DATA: CONTADOR2 TYPE I. "VARIÁVEL INTEIRO PARA RECEBER CONTAGEM."
+
+CONTADOR2 = 0. "VARIÁVEL RECEBE VALOR INICIAL DE CONTAGEM."
+
+WHILE CONTADOR2 <= 10.       "ENQUANTO O CONTADOR FOR MENOR OU IGUAL A 10."
+
+  WRITE / CONTADOR2.         "ESCREVE O VALOR DO CONTADOR."
+
+  CONTADOR2 = CONTADOR2 + 1. "INCREMENTA O CONTADOR."
+
+ENDWHILE.                    "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+"[ITERA SOBRE TABELA INTERNA OU FAIXA DE NÚMEROS.]"
+
+DATA CONTADOR3 TYPE I. "VARIÁVEL INTEIRO PARA RECEBER CONTAGEM."
+
+  CONTADOR3 = 1. "VARIÁVEL RECEBE VALOR INICIAL DE CONTAGEM."
+
+LOOP AT LT_DATA INTO LS_DATA. "ITERAR SOBRE A TABELA LT_DATA."
+
+    WRITE: / '----------------------------------------------------', "EXIBE OS DADOS DA TABELA."
+           / 'FUNCIONÁRIO: ', CONTADOR3,
+           / '----------------------------------------------------',
+           / 'Número Pessoal (ID do funcionário):', LS_DATA-PERNR,
+           / 'Nome do funcionário:', LS_DATA-VORNA,
+           / 'Data de nascimento:', LS_DATA-GBDAT,
+           / 'Sexo:', LS_DATA-GESCH,
+           / 'Nacionalidade:', LS_DATA-NATIO,
+           / 'Estado civil:', LS_DATA-FAMST,
+           / 'Data de início de validade:', LS_DATA-BEGDA,
+           / 'Data de término de validade:', LS_DATA-ENDDA,
+           / '-----------------------------------------------------'.
+
+    CONTADOR3 = CONTADOR3 + 1. "INCREMENTA O CONTADOR."
+
+  ENDLOOP. "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+"[ITERA SOBRE TABELA INTERNA COM ESTRUTURA DINÂMICA.]"
+
+LOOP AT LT_DATA INTO DATA(DYN_DATA). "ITERAR SOBRE A TABELA LT_DATA."
+                                     "A ESTRUTURA DYN_DATA FOI CRIADA NO MOMENTO DO ENUNCIADO."
+                                     "DYN_DATA RECEBE AS CARACTERÍSTICAS DE LINHA DA TABELA INTERNA."
+
+    WRITE: / '----------------------------------------------------', "EXIBE OS DADOS DA TABELA."
+           / 'FUNCIONÁRIO: ', CONTADOR3,
+           / '----------------------------------------------------',
+           / 'Número Pessoal (ID do funcionário):', DYN_DATA-PERNR,
+           / 'Nome do funcionário:', DYN_DATA-VORNA,
+           / 'Data de nascimento:', DYN_DATA-GBDAT,
+           / 'Sexo:', DYN_DATA-GESCH,
+           / 'Nacionalidade:', DYN_DATA-NATIO,
+           / 'Estado civil:', DYN_DATA-FAMST,
+           / 'Data de início de validade:', DYN_DATA-BEGDA,
+           / 'Data de término de validade:', DYN_DATA-ENDDA,
+           / '-----------------------------------------------------'.
+
+    CONTADOR3 = CONTADOR3 + 1. "INCREMENTA O CONTADOR."
+
+    "PS: O CONTADOR AQUI SERVE APENAS PARA CONTAR A QUANTIDADE DE REGISTROS APRESENTADOS.
+        "NÃO SE FAZ NECESSÁRIO USÁ-LO PORQUE O LOOP ITERA SOBRE A TABELA INDEPENDENTEMENTE."
+
+  ENDLOOP. "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+"[ITERA SOBRE TABELA INTERNA USANDO UMA ESTRUTURA DINÂMICA E UM UM FILTRO DE PESQUISA.]"
+
+LOOP AT LT_DATA INTO DATA(DYN_DATA2) WHERE VORNA = 'Doe'. "ITERAR SOBRE A TABELA LT_DATA COM FILTRO."
+
+  WRITE: / 'ESTADO CIVIL: ', DYN_DATA2-FAMST. "EXIBE O ESTADO CIVIL"
+
+  ENDLOOP. "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+"[ESTRUTURA DE CONTROLE DE REPETIÇÃO COM CONTROLE DE SAÍDA.]"
+
+DATA CONTADOR4 TYPE I. "VARIÁVEL INTEIRO PARA RECEBER CONTAGEM."
+
+CONTADOR4 = 1. "VARIÁVEL RECEBE VALOR INICIAL DE CONTAGEM."
+
+DO 10 TIMES.                   "FAZER 10 VEZES...
+
+  WRITE / CONTADOR4.
+
+  IF CONTADOR4 EQ 5.           "SE O CONTADOR FOR IGUAL A 5...
+
+    EXIT.                      "ENCERRA A ESTRUTURA DE CONTROLE."
+
+  ENDIF.                       "ENCERRA A ESTRUTURA DE CONTROLE."
+
+    CONTADOR4 = CONTADOR4 + 1. "INCREMENTA O CONTADOR."
+
+  ENDDO.                       "ENCERRA ESTRUTURA DE CONTROLE."
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+"[ESTRUTURA DE CONTROLE DE REPETIÇÃO COM USO DA INSTRUÇÃO CONTINUE.]"
+
+DATA: LT_INT TYPE TABLE OF I,     "TABELA INTERNA DE INTEIROS."
+      LS_INT LIKE LINE OF LT_INT, "ESTRUTURA DO TIPO DA TABELA INTERNA."
+      LV_SUM TYPE I.              "VARIÁVEL DE NÚMERO INTEIRO."
+
+LT_INT = VALUE #( ( 1 ) ( 2 ) ( 3 ) ( 4 ) ( 5 ) ). "PREENCHE A TABELA INTERNA COM NÚMEROS."
+
+LOOP AT LT_INT INTO LS_INT. "ITERA SOBRE A TABELA INTERNA."
+
+  IF LS_INT EQ 3.           "SE FOR ENCONTRADO UM VALOR IGUAL A 3 NA TABELA...
+
+    CONTINUE.               "IGNORA A LINHA REFERENTE AO VALOR E PULA PARA A PRÓXIMA."
+
+  ENDIF.                    "ENCERRA ESTRUTURA DE CONTROLE."
+
+  LV_SUM = LV_SUM + LS_INT. "INCREMENTA A VARIÁVEL COM OS NÚMEROS DA TABELA."
+
+ENDLOOP.                    "ENCERRA ESTRUTURA DE CONTROLE."
+
+WRITE LV_SUM.               "EXIBE A MENSAGEM."
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
+"[LOOPS ANINHADOS.]"
+
+DATA: LT_OUT TYPE TABLE OF I, "TABELA INTERNA DE INTEIROS."
+      LT_IN TYPE TABLE OF I,  "TABELA INTERNA DE INTEIROS."
+      LV_SUM2 TYPE I.         "VARIÁVEL DE INTEIROS PARA CALCULAR A SOMA DOS NÚMEROS."
+
+LT_OUT = VALUE #( ( 10 ) ( 20 ) ( 30 ) ). "PREENCHE A TABELA INTERNA COM NÚMEROS."
+LT_IN = VALUE #( ( 1 ) ( 2 ) ( 3 ) ).                   "PREENCHE A TABELA INTERNA COM NÚMEROS."
+
+LOOP AT LT_OUT INTO DATA(LS_OUT).        "ITERA SOBRE A TABELA INTERNA."
+  LOOP AT LT_IN INTO DATA(LS_IN).        "ITERA SOBRE A TABELA INTERNA."
+    LV_SUM2 = LV_SUM2 + LS_OUT + LS_INT. "INCREMENTA A VARIÁVEL COM A SOMA DOS NÚMEROS DAS TABELAS."
+    
+    "O QUE ACONTECE AQUI DENTRO...
+    "(1+10) + (1+20) + (1+30) + (2+10) + (2+20) + (2+30) + (3+10) + (3+20) + (3+30).
+    
+  ENDLOOP.                               "ENCERRA ESTRUTURA DE CONTROLE."
+ENDLOOP.                                 "ENCERRA ESTRUTURA DE CONTROLE."
+
+WRITE LV_SUM2.                           "EXIBE A MENSAGEM."
+
+"-------------------------------------------------------------------------------------------------------------
+*"------------------------------------------------------------------------------------------------------------
