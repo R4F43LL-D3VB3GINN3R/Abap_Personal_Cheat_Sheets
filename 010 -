@@ -1,0 +1,5 @@
+cl_demo_output: Esta é uma classe de demonstração fornecida pelo sistema SAP para facilitar a exibição de dados, especialmente útil em programas de teste ou demonstrações.
+=>display: Este é um método estático da classe cl_demo_output usado para exibir o conteúdo que é passado para ele.
+
+SELECT * FROM vbak INTO TABLE @DATA(lt_vbak).
+cl_demo_output=>display( lt_vbak ).
