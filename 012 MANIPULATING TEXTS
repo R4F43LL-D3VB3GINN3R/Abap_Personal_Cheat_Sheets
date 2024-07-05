@@ -45,10 +45,8 @@ CLASS cl_filetext IMPLEMENTATION.
     METHOD generate_text. "Método para a criação do arquivo txt.
 
       "---------------------------------------------------------------------------------------
+      "título do documento
 
-      "gerando header do documento
-
-      "Título do ALV
       DATA: lv_datenow    TYPE char10,   "Data Atual
             lv_hour       TYPE sy-uzeit, "Hora Atual
             lv_hour_str   TYPE string,   "Hora
@@ -78,7 +76,6 @@ CLASS cl_filetext IMPLEMENTATION.
       CONCATENATE docheader lv_datenow lv_time_str INTO docheader SEPARATED BY ' / '.
 
       "------------------------------------------------------------------------------------
-
       "extraindo dados da db para a tabela interna.
       SELECT kunnr,
              name1,
@@ -95,6 +92,10 @@ CLASS cl_filetext IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
 
+      
+      "-----------------------------------------------------------------------------------------
+      "construcao do header
+      
       lv_count = lines( lt_kna1 ). "contando os registros na tabela interna.
       DATA: lv_reg_count TYPE string,
             num TYPE string.
@@ -102,8 +103,6 @@ CLASS cl_filetext IMPLEMENTATION.
       num = lv_count.
       lv_reg_count = 'Contagem de Registros Encontrados:'.
       CONCATENATE lv_reg_count num INTO lv_reg_count SEPARATED BY ' '.
-
-      "Construção do Header
 
       user = sy-uname. "Define o user
 
@@ -124,7 +123,7 @@ CLASS cl_filetext IMPLEMENTATION.
       lv_linha = ' '.
       APPEND lv_linha TO lt_linhas.
 
-      "população da tabela de texto
+      "construcao do corpo
       LOOP AT lt_kna1 INTO ls_kna1.
         lv_linha = '------------------------------'.
         APPEND lv_linha TO lt_linhas.
