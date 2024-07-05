@@ -16,7 +16,11 @@ CLASS cl_filetext DEFINITION FINAL.
           IMPORTING
             lv_path TYPE string
           CHANGING
-            docheader TYPE string.
+            docheader TYPE string,
+
+        load_text
+          IMPORTING
+            lv_path TYPE string.
 
   PRIVATE SECTION.
 
@@ -37,6 +41,8 @@ CLASS cl_filetext DEFINITION FINAL.
 
     DATA: lt_kna1 TYPE TABLE OF ty_kna1, "Tabela Interna.
           ls_kna1 TYPE ty_kna1.
+
+    DATA: load_table TYPE TABLE OF string. "Tabela Interna para carregar arquivos
 
 ENDCLASS.
 
@@ -92,10 +98,9 @@ CLASS cl_filetext IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
 
-      
       "-----------------------------------------------------------------------------------------
       "construcao do header
-      
+
       lv_count = lines( lt_kna1 ). "contando os registros na tabela interna.
       DATA: lv_reg_count TYPE string,
             num TYPE string.
@@ -110,11 +115,7 @@ CLASS cl_filetext IMPLEMENTATION.
       APPEND lv_linha TO lt_linhas.
       lv_linha = docheader.
       APPEND lv_linha TO lt_linhas.
-      lv_linha = '---------------------------------------------------------'.
-      APPEND lv_linha TO lt_linhas.
       lv_linha = lv_reg_count.
-      APPEND lv_linha TO lt_linhas.
-      lv_linha = '---------------------------------------------------------'.
       APPEND lv_linha TO lt_linhas.
       CONCATENATE 'Enviado por: ' user INTO lv_linha SEPARATED BY ' '.
       APPEND lv_linha TO lt_linhas.
@@ -198,6 +199,25 @@ CLASS cl_filetext IMPLEMENTATION.
           dataprovider_exception          = 20
           control_flush_error             = 21
           OTHERS                          = 22.
+
+    ENDMETHOD.
+
+    METHOD load_text.
+
+      CALL FUNCTION 'GUI_UPLOAD'
+        EXPORTING
+          filename = lv_path
+        TABLES
+          data_tab = load_table
+        EXCEPTIONS
+          OTHERS   = 17.
+
+        LOOP AT load_table INTO DATA(ls_table).
+          if ls_table is not initial.
+
+            WRITE: / ls_table.
+          endif.
+        ENDLOOP.
 
     ENDMETHOD.
 
