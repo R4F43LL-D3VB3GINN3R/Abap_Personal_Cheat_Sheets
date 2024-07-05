@@ -1,0 +1,197 @@
+*----------------------------------------------------------------------*
+***INCLUDE ZCL_FILETEXT.
+*----------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Class CL_FILETEXT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+CLASS cl_filetext DEFINITION FINAL.
+
+  PUBLIC SECTION.
+
+    METHODS:
+
+        generate_text
+          importing
+            lv_path type string
+          changing
+            docheader type string.
+
+  PRIVATE SECTION.
+
+    data: lv_linha type string, "linha do txt
+          lt_linhas type table of string, "tabela que acomoda as linhas do txt.
+          lv_count type i value 0. "contagem de registros encontrados na tabela.
+
+    data: docheader type string. "cabeçalho para o documento
+
+    "estrutura com campos selecionados da tabela: Mestre de clientes (parte geral)
+    types: begin of ty_kna1,
+      kunnr type kna1-kunnr,
+      name1 type kna1-name1,
+      regio type kna1-regio,
+      telf1 type kna1-telf1,
+    end of ty_kna1.
+
+    data: lt_kna1 type table of ty_kna1, "Tabela Interna.
+          ls_kna1 type ty_kna1.
+
+ENDCLASS.
+
+CLASS cl_filetext IMPLEMENTATION.
+
+    METHOD generate_text. "Método para a criação do arquivo txt.
+
+      "---------------------------------------------------------------------------------------
+
+      "gerando header do documento
+
+      "Título do ALV
+      DATA: lv_datenow    TYPE char10,   "Data Atual
+            lv_hour       TYPE sy-uzeit, "Hora Atual
+            lv_hour_str   TYPE string,   "Hora
+            lv_minute_str TYPE string,   "Minuto
+            lv_second_str TYPE string.   "Segundo
+
+      DATA: lv_time_str TYPE string. "String para receber strings de tempo concatenadas
+
+      lv_hour = sy-uzeit. "Variável recebe hora atual no sistema.
+
+      " Separação da hora, minuto e segundo
+      lv_hour_str   = lv_hour+0(2).
+      lv_minute_str = lv_hour+2(2).
+      lv_second_str = lv_hour+4(2).
+
+      "Concatenando-os com ":" para formar o horário completo
+      CONCATENATE lv_hour_str ':' lv_minute_str ':' lv_second_str INTO lv_time_str.
+
+      "Função para formatar a data
+      CALL FUNCTION 'CONVERT_DATE_TO_EXTERNAL'
+        EXPORTING
+          date_internal = sy-datum
+        IMPORTING
+          date_external = lv_datenow.
+
+      "Juntando o título, a data e a hora
+      CONCATENATE docheader lv_datenow lv_time_str INTO docheader SEPARATED BY ' / '.
+
+      "------------------------------------------------------------------------------------
+
+      "extraindo dados da db para a tabela interna.
+      select kunnr,
+             name1,
+             regio,
+             telf1 from kna1
+             into corresponding fields of table @lt_kna1
+             where regio = 'SP'.
+
+      "Corrigindo campos vazios para telefone...
+      loop at lt_kna1 into ls_kna1.
+        if ls_kna1-telf1 is initial.
+          ls_kna1-telf1 = '00000000000'.
+          modify lt_kna1 from ls_kna1.
+        endif.
+      endloop.
+
+      lv_count = lines( lt_kna1 ). "contando os registros na tabela interna.
+      data: lv_reg_count type string,
+            num type string.
+
+      num = lv_count.
+      lv_reg_count = 'Contagem de Registros Encontrados:'.
+      concatenate lv_reg_count num into lv_reg_count separated by ' '.
+
+      "header
+      lv_linha = '--------------------------------------------------------'.
+      append lv_linha to lt_linhas.
+      lv_linha = docheader.
+      append lv_linha to lt_linhas.
+      lv_linha = '---------------------------------------------------------'.
+      append lv_linha to lt_linhas.
+      lv_linha = lv_reg_count.
+      append lv_linha to lt_linhas.
+      lv_linha = '---------------------------------------------------------'.
+      append lv_linha to lt_linhas.
+      lv_linha = ' '.
+      append lv_linha to lt_linhas.
+
+      "população da tabela de texto
+      loop at lt_kna1 into ls_kna1.
+        lv_linha = '------------------------------'.
+        append lv_linha to lt_linhas.
+        concatenate 'Número: ' ls_kna1-kunnr into lv_linha separated by ' '.
+        append lv_linha to lt_linhas.
+        concatenate 'Nome: ' ls_kna1-name1 into lv_linha separated by ' '.
+        append lv_linha to lt_linhas.
+        concatenate 'País: ' ls_kna1-regio into lv_linha separated by ' '.
+        append lv_linha to lt_linhas.
+        concatenate 'Phone: ' ls_kna1-telf1 into lv_linha separated by ' '.
+        append lv_linha to lt_linhas.
+        lv_linha = '------------------------------'.
+        append lv_linha to lt_linhas.
+        lv_linha = ' '.
+        append lv_linha to lt_linhas.
+      endloop.
+
+      "chamada da funcao para exportar o txt
+      "a funcao irá receber a tabela
+      CALL FUNCTION 'GUI_DOWNLOAD'
+        EXPORTING
+*         BIN_FILESIZE                    =
+          filename                        = lv_path
+         FILETYPE                         = 'ASC'
+*         APPEND                          = ' '
+*         WRITE_FIELD_SEPARATOR           = ' '
+*         HEADER                          = '00'
+*         TRUNC_TRAILING_BLANKS           = ' '
+*         WRITE_LF                        = 'X'
+*         COL_SELECT                      = ' '
+*         COL_SELECT_MASK                 = ' '
+*         DAT_MODE                        = ' '
+*         CONFIRM_OVERWRITE               = ' '
+*         NO_AUTH_CHECK                   = ' '
+*         CODEPAGE                        = ' '
+*         IGNORE_CERR                     = ABAP_TRUE
+*         REPLACEMENT                     = '#'
+*         WRITE_BOM                       = ' '
+*         TRUNC_TRAILING_BLANKS_EOL       = 'X'
+*         WK1_N_FORMAT                    = ' '
+*         WK1_N_SIZE                      = ' '
+*         WK1_T_FORMAT                    = ' '
+*         WK1_T_SIZE                      = ' '
+*         WRITE_LF_AFTER_LAST_LINE        = ABAP_TRUE
+*         SHOW_TRANSFER_STATUS            = ABAP_TRUE
+*         VIRUS_SCAN_PROFILE              = '/SCET/GUI_DOWNLOAD'
+*       IMPORTING
+*         FILELENGTH                      =
+        tables
+          data_tab                        = lt_linhas
+*         FIELDNAMES                      =
+        EXCEPTIONS
+          FILE_WRITE_ERROR                = 1
+          NO_BATCH                        = 2
+          GUI_REFUSE_FILETRANSFER         = 3
+          INVALID_TYPE                    = 4
+          NO_AUTHORITY                    = 5
+          UNKNOWN_ERROR                   = 6
+          HEADER_NOT_ALLOWED              = 7
+          SEPARATOR_NOT_ALLOWED           = 8
+          FILESIZE_NOT_ALLOWED            = 9
+          HEADER_TOO_LONG                 = 10
+          DP_ERROR_CREATE                 = 11
+          DP_ERROR_SEND                   = 12
+          DP_ERROR_WRITE                  = 13
+          UNKNOWN_DP_ERROR                = 14
+          ACCESS_DENIED                   = 15
+          DP_OUT_OF_MEMORY                = 16
+          DISK_FULL                       = 17
+          DP_TIMEOUT                      = 18
+          FILE_NOT_FOUND                  = 19
+          DATAPROVIDER_EXCEPTION          = 20
+          CONTROL_FLUSH_ERROR             = 21
+          OTHERS                          = 22.
+
+    ENDMETHOD.
+
+ENDCLASS.
