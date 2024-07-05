@@ -12,12 +12,14 @@ CLASS cl_filetext DEFINITION FINAL.
 
     METHODS:
 
+        "cria txt
         generate_text
           IMPORTING
             lv_path TYPE string
           CHANGING
             docheader TYPE string,
 
+        "carrega txt criado
         load_text
           IMPORTING
             lv_path TYPE string.
