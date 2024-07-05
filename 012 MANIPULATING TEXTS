@@ -13,29 +13,30 @@ CLASS cl_filetext DEFINITION FINAL.
     METHODS:
 
         generate_text
-          importing
-            lv_path type string
-          changing
-            docheader type string.
+          IMPORTING
+            lv_path TYPE string
+          CHANGING
+            docheader TYPE string.
 
   PRIVATE SECTION.
 
-    data: lv_linha type string, "linha do txt
-          lt_linhas type table of string, "tabela que acomoda as linhas do txt.
-          lv_count type i value 0. "contagem de registros encontrados na tabela.
+    DATA: lv_linha TYPE string, "linha do txt
+          lt_linhas TYPE TABLE OF string, "tabela que acomoda as linhas do txt.
+          lv_count TYPE i VALUE 0. "contagem de registros encontrados na tabela.
 
-    data: docheader type string. "cabeçalho para o documento
+    DATA: docheader TYPE string. "cabeçalho para o documento
+    DATA: user TYPE sy-uname. "login do user logado no sistema
 
     "estrutura com campos selecionados da tabela: Mestre de clientes (parte geral)
-    types: begin of ty_kna1,
-      kunnr type kna1-kunnr,
-      name1 type kna1-name1,
-      regio type kna1-regio,
-      telf1 type kna1-telf1,
-    end of ty_kna1.
+    TYPES: BEGIN OF ty_kna1,
+      kunnr TYPE kna1-kunnr,
+      name1 TYPE kna1-name1,
+      regio TYPE kna1-regio,
+      telf1 TYPE kna1-telf1,
+    END OF ty_kna1.
 
-    data: lt_kna1 type table of ty_kna1, "Tabela Interna.
-          ls_kna1 type ty_kna1.
+    DATA: lt_kna1 TYPE TABLE OF ty_kna1, "Tabela Interna.
+          ls_kna1 TYPE ty_kna1.
 
 ENDCLASS.
 
@@ -79,60 +80,67 @@ CLASS cl_filetext IMPLEMENTATION.
       "------------------------------------------------------------------------------------
 
       "extraindo dados da db para a tabela interna.
-      select kunnr,
+      SELECT kunnr,
              name1,
              regio,
-             telf1 from kna1
-             into corresponding fields of table @lt_kna1
-             where regio = 'SP'.
+             telf1 FROM kna1
+             INTO CORRESPONDING FIELDS OF TABLE @lt_kna1
+             WHERE regio = 'SP'.
 
       "Corrigindo campos vazios para telefone...
-      loop at lt_kna1 into ls_kna1.
-        if ls_kna1-telf1 is initial.
+      LOOP AT lt_kna1 INTO ls_kna1.
+        IF ls_kna1-telf1 IS INITIAL.
           ls_kna1-telf1 = '00000000000'.
-          modify lt_kna1 from ls_kna1.
-        endif.
-      endloop.
+          MODIFY lt_kna1 FROM ls_kna1.
+        ENDIF.
+      ENDLOOP.
 
       lv_count = lines( lt_kna1 ). "contando os registros na tabela interna.
-      data: lv_reg_count type string,
-            num type string.
+      DATA: lv_reg_count TYPE string,
+            num TYPE string.
 
       num = lv_count.
       lv_reg_count = 'Contagem de Registros Encontrados:'.
-      concatenate lv_reg_count num into lv_reg_count separated by ' '.
+      CONCATENATE lv_reg_count num INTO lv_reg_count SEPARATED BY ' '.
 
-      "header
+      "Construção do Header
+
+      user = sy-uname. "Define o user
+
       lv_linha = '--------------------------------------------------------'.
-      append lv_linha to lt_linhas.
+      APPEND lv_linha TO lt_linhas.
       lv_linha = docheader.
-      append lv_linha to lt_linhas.
+      APPEND lv_linha TO lt_linhas.
       lv_linha = '---------------------------------------------------------'.
-      append lv_linha to lt_linhas.
+      APPEND lv_linha TO lt_linhas.
       lv_linha = lv_reg_count.
-      append lv_linha to lt_linhas.
+      APPEND lv_linha TO lt_linhas.
       lv_linha = '---------------------------------------------------------'.
-      append lv_linha to lt_linhas.
+      APPEND lv_linha TO lt_linhas.
+      CONCATENATE 'Enviado por: ' user INTO lv_linha SEPARATED BY ' '.
+      APPEND lv_linha TO lt_linhas.
+      lv_linha = '---------------------------------------------------------'.
+      APPEND lv_linha TO lt_linhas.
       lv_linha = ' '.
-      append lv_linha to lt_linhas.
+      APPEND lv_linha TO lt_linhas.
 
       "população da tabela de texto
-      loop at lt_kna1 into ls_kna1.
+      LOOP AT lt_kna1 INTO ls_kna1.
         lv_linha = '------------------------------'.
-        append lv_linha to lt_linhas.
-        concatenate 'Número: ' ls_kna1-kunnr into lv_linha separated by ' '.
-        append lv_linha to lt_linhas.
-        concatenate 'Nome: ' ls_kna1-name1 into lv_linha separated by ' '.
-        append lv_linha to lt_linhas.
-        concatenate 'País: ' ls_kna1-regio into lv_linha separated by ' '.
-        append lv_linha to lt_linhas.
-        concatenate 'Phone: ' ls_kna1-telf1 into lv_linha separated by ' '.
-        append lv_linha to lt_linhas.
+        APPEND lv_linha TO lt_linhas.
+        CONCATENATE 'Número: ' ls_kna1-kunnr INTO lv_linha SEPARATED BY ' '.
+        APPEND lv_linha TO lt_linhas.
+        CONCATENATE 'Nome: ' ls_kna1-name1 INTO lv_linha SEPARATED BY ' '.
+        APPEND lv_linha TO lt_linhas.
+        CONCATENATE 'País: ' ls_kna1-regio INTO lv_linha SEPARATED BY ' '.
+        APPEND lv_linha TO lt_linhas.
+        CONCATENATE 'Phone: ' ls_kna1-telf1 INTO lv_linha SEPARATED BY ' '.
+        APPEND lv_linha TO lt_linhas.
         lv_linha = '------------------------------'.
-        append lv_linha to lt_linhas.
+        APPEND lv_linha TO lt_linhas.
         lv_linha = ' '.
-        append lv_linha to lt_linhas.
-      endloop.
+        APPEND lv_linha TO lt_linhas.
+      ENDLOOP.
 
       "chamada da funcao para exportar o txt
       "a funcao irá receber a tabela
@@ -140,7 +148,7 @@ CLASS cl_filetext IMPLEMENTATION.
         EXPORTING
 *         BIN_FILESIZE                    =
           filename                        = lv_path
-         FILETYPE                         = 'ASC'
+         filetype                         = 'ASC'
 *         APPEND                          = ' '
 *         WRITE_FIELD_SEPARATOR           = ' '
 *         HEADER                          = '00'
@@ -165,31 +173,31 @@ CLASS cl_filetext IMPLEMENTATION.
 *         VIRUS_SCAN_PROFILE              = '/SCET/GUI_DOWNLOAD'
 *       IMPORTING
 *         FILELENGTH                      =
-        tables
+        TABLES
           data_tab                        = lt_linhas
 *         FIELDNAMES                      =
         EXCEPTIONS
-          FILE_WRITE_ERROR                = 1
-          NO_BATCH                        = 2
-          GUI_REFUSE_FILETRANSFER         = 3
-          INVALID_TYPE                    = 4
-          NO_AUTHORITY                    = 5
-          UNKNOWN_ERROR                   = 6
-          HEADER_NOT_ALLOWED              = 7
-          SEPARATOR_NOT_ALLOWED           = 8
-          FILESIZE_NOT_ALLOWED            = 9
-          HEADER_TOO_LONG                 = 10
-          DP_ERROR_CREATE                 = 11
-          DP_ERROR_SEND                   = 12
-          DP_ERROR_WRITE                  = 13
-          UNKNOWN_DP_ERROR                = 14
-          ACCESS_DENIED                   = 15
-          DP_OUT_OF_MEMORY                = 16
-          DISK_FULL                       = 17
-          DP_TIMEOUT                      = 18
-          FILE_NOT_FOUND                  = 19
-          DATAPROVIDER_EXCEPTION          = 20
-          CONTROL_FLUSH_ERROR             = 21
+          file_write_error                = 1
+          no_batch                        = 2
+          gui_refuse_filetransfer         = 3
+          invalid_type                    = 4
+          no_authority                    = 5
+          unknown_error                   = 6
+          header_not_allowed              = 7
+          separator_not_allowed           = 8
+          filesize_not_allowed            = 9
+          header_too_long                 = 10
+          dp_error_create                 = 11
+          dp_error_send                   = 12
+          dp_error_write                  = 13
+          unknown_dp_error                = 14
+          access_denied                   = 15
+          dp_out_of_memory                = 16
+          disk_full                       = 17
+          dp_timeout                      = 18
+          file_not_found                  = 19
+          dataprovider_exception          = 20
+          control_flush_error             = 21
           OTHERS                          = 22.
 
     ENDMETHOD.
