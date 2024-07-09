@@ -1,13 +1,5 @@
-*&---------------------------------------------------------------------*
-*& Report ZTEMP002
-*&---------------------------------------------------------------------*
-*&
-*&---------------------------------------------------------------------*
 REPORT ztemp002.
 
-*---------------------------------------------------------------------*
-*          T Y P E S D E C L A R A T I O N
-*---------------------------------------------------------------------*
 "selecao de campos da tabela: Documento de vendas: dados de cabeçalho
 TYPES: BEGIN OF ty_vbak,
   vbeln TYPE vbak-vbeln,
@@ -17,24 +9,18 @@ TYPES: BEGIN OF ty_vbak,
 END OF ty_vbak.
 
 DATA: t_header TYPE STANDARD TABLE OF w3head   WITH HEADER LINE,
-      t_fields TYPE STANDARD TABLE OF w3fields WITH HEADER LINE,
-      t_html   TYPE STANDARD TABLE OF w3html,
-      wa_header TYPE w3head,
+      t_fields TYPE STANDARD TABLE OF w3fields WITH HEADER LINE.
+
+DATA: wa_header TYPE w3head,
       w_head    TYPE w3head.
 
-DATA: lt_vbak TYPE TABLE OF ty_vbak,             
+DATA: lt_vbak TYPE TABLE OF ty_vbak,
+      t_html   TYPE STANDARD TABLE OF w3html,
       lt_fcat TYPE lvc_t_fcat WITH HEADER LINE.
-
-**---------------------------------------------------------------------*
-**        S T A R T - O F - S E L E C T I O N
-**---------------------------------------------------------------------*
 
 START-OF-SELECTION.
 SELECT vbeln, erdat, erzet, ernam FROM vbap INTO CORRESPONDING FIELDS OF TABLE @lt_vbak UP TO 30 ROWS.
 
-**---------------------------------------------------------------------*
-**        E N D - O F - S E L E C T I O N
-**---------------------------------------------------------------------*
 END-OF-SELECTION.
 
 lt_fcat-coltext = 'Sales Doc'.
