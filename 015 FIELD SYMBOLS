@@ -49,4 +49,34 @@ DO.
 ENDDO.
 
 "---------------------------------------------------------------------------------
+[ESCREVENDO CAMPOS E VALORES DE UMA TABELA]
 
+" Este relatório lê os campos da tabela EKKO a partir da tabela DD03L e exibe os nomes dos campos 
+" e seus valores para cada registro na tabela EKKO.
+
+" Seleciona todos os campos da tabela DD03L onde o nome da tabela é 'EKKO' e armazena os resultados em it_ekko_str
+SELECT FROM dd03l
+  FIELDS *
+  WHERE tabname = 'EKKO'
+    INTO TABLE @DATA(it_ekko_str).
+
+" Seleciona todos os registros da tabela EKKO e armazena os resultados em it_ekko_data
+SELECT FROM ekko
+  FIELDS * INTO TABLE @DATA(it_ekko_data).
+
+" Loop para percorrer todos os registros da tabela it_ekko_data
+LOOP AT it_ekko_data INTO DATA(wa_data).
+  " Loop para percorrer todos os campos da tabela it_ekko_str
+  LOOP AT it_ekko_str ASSIGNING FIELD-SYMBOL(<fs_str>).
+    " Atribui dinamicamente o valor do componente atual (campo) de wa_data a um field-symbol <fs_value>
+    ASSIGN COMPONENT <fs_str>-fieldname OF STRUCTURE wa_data TO FIELD-SYMBOL(<fs_value>).
+    
+    " Verifica se a atribuição foi bem-sucedida
+    IF sy-subrc EQ 0.
+      " Escreve o nome do campo e o valor do campo na saída do relatório
+      WRITE: / <fs_str>-fieldname, '=>', <fs_value>.
+    ENDIF.
+  ENDLOOP.
+ENDLOOP.
+
+"---------------------------------------------------------------------------------
