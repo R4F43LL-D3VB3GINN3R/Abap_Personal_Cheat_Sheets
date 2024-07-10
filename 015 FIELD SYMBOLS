@@ -1,4 +1,5 @@
-REPORT ztemp002.
+"---------------------------------------------------------------------------------
+[PERCORRENDO UMA TABELA INTERNA]
 
 "structure
 types: begin of ty_data,
@@ -30,3 +31,22 @@ field-symbols: <fs_line> type ty_data.
 loop at it_itab assigning <fs_line>.
   write: / <fs_line>-name, <fs_line>-age.
 endloop.
+"---------------------------------------------------------------------------------
+[PERCORRENDO UMA TABELA ESTRUTURA]
+
+SELECT SINGLE FROM ekko
+  FIELDS * INTO @DATA(wa_ekko).
+
+DO.
+
+  ASSIGN COMPONENT sy-index OF STRUCTURE wa_ekko TO FIELD-SYMBOL(<fs_value>).
+  IF sy-subrc = 0.
+    WRITE: / <fs_value>.
+  ELSE.
+    EXIT.
+  ENDIF.
+
+ENDDO.
+
+"---------------------------------------------------------------------------------
+
