@@ -1,0 +1,32 @@
+REPORT ztemp002.
+
+"structure
+types: begin of ty_data,
+  name type string,
+  age type i,
+end of ty_data.
+
+"tabletype
+types: ty_it_itab type standard table of ty_data with default key.
+
+"internal table
+data: it_itab type ty_it_itab.
+
+"filling the table
+it_itab = value ty_it_itab(
+
+  ( name = 'tom' age = '20' )
+  ( name = 'mike' age = '25' )
+  ( name = 'joshua' age = '30' )
+  ( name = 'maria' age = '35' )
+  ( name = 'claire' age = '40' )
+
+).
+
+"declare field symbols
+field-symbols: <fs_line> type ty_data.
+
+"example 1
+loop at it_itab assigning <fs_line>.
+  write: / <fs_line>-name, <fs_line>-age.
+endloop.
