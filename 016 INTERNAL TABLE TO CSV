@@ -1,0 +1,16 @@
+"--------------------------------------------------------------------------------------------"
+[COLUNAS VERTICAIS]
+
+SELECT FROM dd03l
+  FIELDS *
+    WHERE tabname = 'EKKO'
+      INTO TABLE @DATA(it_ekko_str)
+        up to 20 rows.
+
+CALL FUNCTION 'GUI_DOWNLOAD'
+  EXPORTING
+    filename                        = 'C:\Users\rafal\Desktop\Rafael\new_file.csv'
+  tables
+    data_tab                        = it_ekko_str
+
+"--------------------------------------------------------------------------------------------"
