@@ -9,7 +9,7 @@ SELECT FROM dd03l
 
 CALL FUNCTION 'GUI_DOWNLOAD'
   EXPORTING
-    filename                        = 'C:\Users\rafal\Desktop\Rafael\new_file.csv'
+    filename                        = 'C:\Users\rafal\Desktop\Rafael\new_file.xls'
   tables
     data_tab                        = it_ekko_str
 
