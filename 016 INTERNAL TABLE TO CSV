@@ -14,3 +14,80 @@ CALL FUNCTION 'GUI_DOWNLOAD'
     data_tab                        = it_ekko_str
 
 "--------------------------------------------------------------------------------------------"
+[COLUNAS HORIZONTAIS E COM CABEÇALHO]
+
+REPORT ztemp002.
+
+" Declaração de tipos para a seleção de campos da tabela: Documento de vendas: dados de cabeçalho
+TYPES: BEGIN OF ty_vbak,
+  vbeln TYPE vbak-vbeln,   " Número do documento de vendas
+  erdat TYPE vbak-erdat,   " Data de criação do documento
+  erzet TYPE vbak-erzet,   " Hora de criação do documento
+  ernam TYPE vbak-ernam,   " Nome do usuário que criou o documento
+END OF ty_vbak.
+
+DATA: lt_vbak TYPE TABLE OF ty_vbak,       " Tabela interna para armazenar os dados selecionados
+      lt_vbak_with_header TYPE TABLE OF ty_vbak, " Tabela interna para armazenar os dados com cabeçalho
+      wa_vbak TYPE ty_vbak,                 " Estrutura de trabalho para armazenar os dados
+      lt_fieldnames TYPE TABLE OF string.   " Tabela para armazenar os nomes dos campos
+
+" Seleção dos dados da tabela VBAK com base nos campos definidos na estrutura ty_vbak
+SELECT vbeln, erdat, erzet, ernam
+  FROM vbak
+  INTO TABLE @lt_vbak
+  UP TO 30 ROWS.
+
+" Adicionar os nomes dos campos à tabela lt_fieldnames
+APPEND 'VBELN' TO lt_fieldnames.
+APPEND 'ERDAT' TO lt_fieldnames.
+APPEND 'ERZET' TO lt_fieldnames.
+APPEND 'ERNAM' TO lt_fieldnames.
+
+" Adicionar os nomes dos campos como a primeira linha da tabela lt_vbak_with_header
+LOOP AT lt_fieldnames INTO DATA(lv_fieldname).
+  ASSIGN COMPONENT lv_fieldname OF STRUCTURE wa_vbak TO FIELD-SYMBOL(<fs_field>).
+  <fs_field> = lv_fieldname.
+ENDLOOP.
+APPEND wa_vbak TO lt_vbak_with_header.
+
+" Adicionar os dados reais à tabela lt_vbak_with_header
+APPEND LINES OF lt_vbak TO lt_vbak_with_header.
+
+" Download do CSV gerado para um arquivo no sistema local
+CALL FUNCTION 'GUI_DOWNLOAD'
+  EXPORTING
+    filename              = 'C:\Users\rafal\Desktop\file.xls'
+    filetype              = 'ASC'
+    write_field_separator = 'X'
+  TABLES
+    data_tab              = lt_vbak_with_header
+  EXCEPTIONS
+    file_write_error      = 1
+    no_batch              = 2
+    gui_refuse_filetransfer = 3
+    invalid_type          = 4
+    no_authority          = 5
+    unknown_error         = 6
+    header_not_allowed    = 7
+    separator_not_allowed = 8
+    filesize_not_allowed  = 9
+    header_too_long       = 10
+    dp_error_create       = 11
+    dp_error_send         = 12
+    dp_error_write        = 13
+    unknown_dp_error      = 14
+    access_denied         = 15
+    dp_out_of_memory      = 16
+    disk_full             = 17
+    dp_timeout            = 18
+    file_not_found        = 19
+    dataprovider_exception = 20
+    control_flush_error   = 21
+    OTHERS                = 22.
+
+IF sy-subrc <> 0.
+  " Implement suitable error handling here
+  MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+          WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+ENDIF.
+"--------------------------------------------------------------------------------------------"
