@@ -25,3 +25,5 @@ DATA: LV_IDMSG      TYPE SY-MSGID, "ID of the Messages Program"
       LV_DYNNUM     TYPE SY-DYNNR, "Number of Dynpro Screen"
       LV_DYNNTYTLE  TYPE SY-TITLE, "Number of Dynpro Title"
       LV_BINPUT     TYPE SY-BINPT, "Index of Binary Entry"
+
+"-------------------------------------
