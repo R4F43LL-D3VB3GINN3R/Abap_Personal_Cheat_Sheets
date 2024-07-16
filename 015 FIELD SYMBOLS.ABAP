@@ -80,3 +80,28 @@ LOOP AT it_ekko_data INTO DATA(wa_data).
 ENDLOOP.
 
 "---------------------------------------------------------------------------------
+[ALTERANDO TABELAS]
+
+REPORT ZTEMP003_RAFAEL_FSYMBOLSSS.
+
+"Field Symbols.
+Field-Symbols: <lv_generic>  type any,       "qualquer variável
+               <lit_generic> type any table, "qualquer tabela
+               <lwa_t001>    type t001.      "estrutura da tabela t001.
+
+data: it_t001 type table of t001. "tabela do tipo da tabelaz.
+
+"select da tabela preenchendo a àrea de memoria a qual o apontador esta ligado,
+"ou seja, preenche a trabela it_t001
+select * from t001 into table <lit_generic>.
+
+"loop a tabela interna, atribuindo a area de memoria de cada linha ao field sumbol.
+loop at it_t001 assigning <lwa_t001>.
+  <lwa_t001>-butxt = 'Nome sobregravado'. "Modifica a área de memoria que aponta para a alinha atual da tabela
+endloop.
+
+"declaracao inline + assign component
+loop at it_t001 assigning field-symbol(<wa_inline>).
+  assign component 'BUTXT' of structure <wa_inline> to field-symbol(<lv_inline>).
+  <lv_inline> = 'Nome sobregravcado'.
+endloop.
