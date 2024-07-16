@@ -186,3 +186,20 @@ IF sy-subrc <> 0.
           WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
 ENDIF.
 "--------------------------------------------------------------------------------------------"
+[IMPORTA O CSV OU XLS PARA TABELA INTERNA]
+
+"create table
+DATA: output TYPE TABLE OF string.
+
+"the file extension can be xls or csv.
+CALL FUNCTION 'GUI_UPLOAD'
+  EXPORTING
+    filename                      = 'C:\Users\rafal\Desktop\new_file.xls'
+    filetype                      = 'ASC'
+  TABLES
+    data_tab                      = output.
+
+IF sy-subrc = 0.
+  cl_demo_output=>display( output ).
+ENDIF.
+"--------------------------------------------------------------------------------------------"
