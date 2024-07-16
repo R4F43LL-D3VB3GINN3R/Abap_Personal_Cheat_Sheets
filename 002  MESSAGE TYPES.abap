@@ -56,3 +56,19 @@ MESSAGE I001(00) WITH LV_MESSAGE_1 DISPLAY LIKE 'S'. "SUCESS POPUP"
 WRITE 'END'.
 ......................................................................................................................................................
 ......................................................................................................................................................
+REPORT ZTEMP004_RAFAEL_MESSAGETYPES.
+
+message 'formacao abap - mensagem de informacao' type 'I'.
+
+message 'formacao abap - mensagem de sucesso' type 'S'.
+
+message 'formacao abap - mensagem de aviso' type 'W'.
+
+message 'formacao abap - mensagem de erro' type 'E'.
+
+message 'formacao abap - terminacao' type 'A'.
+
+message 'formacao abap - curto despejo' type 'X'. 
+
+......................................................................................................................................................
+......................................................................................................................................................
