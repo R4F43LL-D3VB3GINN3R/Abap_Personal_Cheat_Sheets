@@ -115,3 +115,93 @@ START-OF-SELECTION.
 
 
 END-OF-SELECTION.
+
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Report ZALV_TEST004
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zalv_test004.
+
+"tabela de empresas
+DATA: it_empresa TYPE TABLE OF zempresa,
+      ls_empresa TYPE zempresa.
+*tabela de funcionarios
+DATA: it_funcionario TYPE TABLE OF zfuncionarios,
+      ls_funcionario TYPE zfuncionarios.
+"estrutura do alv
+TYPES: BEGIN OF wa_output,
+  id_empresa TYPE zempresa-id_empresa,
+  nome TYPE zempresa-nome,
+  nomefuncionario TYPE zfuncionarios-nome_funcionario,
+END OF wa_output.
+"tabela e estrutura de saída
+DATA: it_output TYPE TABLE OF wa_output,
+      ls_output TYPE wa_output.
+"alv basico
+DATA: alv_empresa TYPE REF TO cl_salv_table.
+"funcoes do alv
+DATA: alv_functions TYPE REF TO cl_salv_functions,
+      alv_settings TYPE REF TO cl_salv_display_settings.
+"colunas do alv
+DATA: alv_columns TYPE REF TO cl_salv_columns_table,
+      alv_column TYPE REF TO cl_salv_column_table.
+"ordenação do alv
+DATA: alv_sorts type ref to cl_salv_sorts.
+"filtros de alv
+DATA: alv_filter type ref to cl_salv_filters.
+"cores do alv
+DATA: color1 TYPE lvc_s_colo.
+"----------------------------------------------------------------------------
+"preenche tabela interna
+START-OF-SELECTION.
+  SELECT * FROM zempresa INTO TABLE it_empresa.
+  SELECT * FROM zfuncionarios INTO TABLE it_funcionario.
+
+  LOOP AT it_funcionario INTO ls_funcionario.
+    ls_output-id_empresa = ls_funcionario-id_empresa.
+    ls_output-nomefuncionario = ls_funcionario-nome_funcionario.
+    LOOP AT it_empresa INTO ls_empresa WHERE id_empresa = ls_funcionario-id_empresa.
+      ls_output-nome = ls_empresa-nome.
+    ENDLOOP.
+    APPEND ls_output TO it_output.
+  ENDLOOP.
+"----------------------------------------------------------------------------
+"chamada do metodo para exibicao alv
+cl_salv_table=>factory(
+  IMPORTING
+    r_salv_table   = alv_empresa
+  CHANGING
+    t_table        = it_output ).
+"----------------------------------------------------------------------------
+"exibicao das funcionalidades do alv
+alv_functions = alv_empresa->get_functions( ).
+alv_functions->set_all( abap_true ).
+"exibicao das settings do alv
+alv_settings = alv_empresa->get_display_settings( ).
+alv_settings->set_striped_pattern( cl_salv_display_settings=>true ).
+alv_settings->set_list_header( 'Empresas / Funcionários' ).
+"----------------------------------------------------------------------------
+"colorindo colunas no alv.
+alv_columns = alv_empresa->get_columns( ).
+alv_column ?= alv_columns->get_column( 'NOME').
+color1-col = '1'.
+color1-int = '1'.
+color1-inv = '1'.
+alv_column->set_color( color1 ).
+"----------------------------------------------------------------------------
+"ordenação do alv
+alv_sorts = alv_empresa->get_sorts( ).
+alv_sorts->add_sort( columnname = 'NOME' ).
+"----------------------------------------------------------------------------
+"filtros do alv
+alv_filter = alv_empresa->get_filters( ).
+alv_filter->add_filter( columnname = 'NOME').
+"----------------------------------------------------------------------------
+"exibicao do alv
+alv_empresa->display( ).
+"----------------------------------------------------------------------------
