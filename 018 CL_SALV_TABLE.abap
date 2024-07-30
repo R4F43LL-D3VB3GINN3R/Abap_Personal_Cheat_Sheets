@@ -128,7 +128,6 @@ END-OF-SELECTION.
 REPORT zalv_test004.
 
 TABLES: zempresa, zfuncionarios.
-
 "tabela de empresas
 DATA: it_empresa TYPE TABLE OF zempresa,
       ls_empresa TYPE zempresa.
@@ -181,8 +180,9 @@ START-OF-SELECTION.
 *      ls_output-nome = ls_empresa-nome.
 *    ENDLOOP.
 *    APPEND ls_output TO it_output.
+*  ENDLOOP.
 
-"ou
+  "ou
 
   SELECT a~id_empresa
          a~nome
@@ -200,10 +200,7 @@ START-OF-SELECTION.
     ENDIF.
 
     APPEND ls_output TO it_output.
-
   ENDSELECT.
-
-*  ENDLOOP.
   "----------------------------------------------------------------------------
   "chamada do metodo para exibicao alv
   cl_salv_table=>factory(
