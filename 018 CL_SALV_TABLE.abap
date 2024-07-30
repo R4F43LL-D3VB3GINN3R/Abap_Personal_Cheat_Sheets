@@ -137,10 +137,10 @@ DATA: it_funcionario TYPE TABLE OF zfuncionarios,
       ls_funcionario TYPE zfuncionarios.
 "estrutura do alv
 TYPES: BEGIN OF wa_output,
-         id_empresa      TYPE zempresa-id_empresa,
-         nome            TYPE zempresa-nome,
-         nomefuncionario TYPE zfuncionarios-nome_funcionario,
-         status          TYPE icon_d,
+         id_empresa       TYPE zempresa-id_empresa,
+         nome             TYPE zempresa-nome,
+         nome_funcionario TYPE zfuncionarios-nome_funcionario,
+         status           TYPE icon_d,
        END OF wa_output.
 "tabela e estrutura de saída
 DATA: it_output TYPE TABLE OF wa_output,
@@ -163,25 +163,47 @@ DATA: color1 TYPE lvc_s_colo.
 "preenche tabela interna
 
 START-OF-SELECTION.
-  SELECT * FROM zempresa INTO TABLE it_empresa.
-  SELECT * FROM zfuncionarios INTO TABLE it_funcionario.
+*  SELECT * FROM zempresa INTO TABLE it_empresa.
+*  SELECT * FROM zfuncionarios INTO TABLE it_funcionario.
+*
+*  LOOP AT it_funcionario INTO ls_funcionario.
+*    ls_output-id_empresa = ls_funcionario-id_empresa.
+*    IF ls_output-id_empresa = '1'.
+*      ls_output-status = icon_yellow_light.
+*    ELSEIF ls_output-id_empresa = '2'.
+*      ls_output-status = icon_green_light.
+*    ELSE.
+*      ls_output-status = icon_red_light.
+*      ls_output-nome = ' '.
+*    ENDIF.
+*    ls_output-nome_funcionario = ls_funcionario-nome_funcionario.
+*    LOOP AT it_empresa INTO ls_empresa WHERE id_empresa = ls_funcionario-id_empresa.
+*      ls_output-nome = ls_empresa-nome.
+*    ENDLOOP.
+*    APPEND ls_output TO it_output.
 
-  LOOP AT it_funcionario INTO ls_funcionario.
-    ls_output-id_empresa = ls_funcionario-id_empresa.
+"ou
+
+  SELECT a~id_empresa
+         a~nome
+         b~nome_funcionario
+      FROM zempresa AS a
+      INNER JOIN zfuncionarios AS b ON a~id_empresa = b~id_empresa
+      INTO ls_output.
+
     IF ls_output-id_empresa = '1'.
       ls_output-status = icon_yellow_light.
     ELSEIF ls_output-id_empresa = '2'.
       ls_output-status = icon_green_light.
     ELSE.
       ls_output-status = icon_red_light.
-      ls_output-nome = ' '.
     ENDIF.
-    ls_output-nomefuncionario = ls_funcionario-nome_funcionario.
-    LOOP AT it_empresa INTO ls_empresa WHERE id_empresa = ls_funcionario-id_empresa.
-      ls_output-nome = ls_empresa-nome.
-    ENDLOOP.
+
     APPEND ls_output TO it_output.
-  ENDLOOP.
+
+  ENDSELECT.
+
+*  ENDLOOP.
   "----------------------------------------------------------------------------
   "chamada do metodo para exibicao alv
   cl_salv_table=>factory(
@@ -213,7 +235,7 @@ START-OF-SELECTION.
   alv_sorts = alv_empresa->get_sorts( ).
   alv_sorts->add_sort( columnname = 'NOME').
   "----------------------------------------------------------------------------
-*filtros do alv
+  "filtros do alv
   alv_filter = alv_empresa->get_filters( ).
   alv_filter->add_filter( columnname = 'ID_EMPRESA').
 
