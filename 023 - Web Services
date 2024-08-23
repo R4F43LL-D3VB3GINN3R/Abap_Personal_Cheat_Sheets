@@ -7,10 +7,14 @@ Localize a função referida (RF7).
 Clique com o botão direito sobre a função e selecione Criar > Enterprise Service.
 Siga as etapas do Wizard Guide para completar a criação do serviço.
 
+"----------------------------------------
+
 Passo 2: Ativar Módulo de Acesso Remoto e Início Imediato
 Acesse as Características do sistema SAP.
 Ative o Módulo de Acesso Remoto.
 Habilite a opção de Início Imediato para o módulo.
+
+"----------------------------------------
 
 Passo 3: Configurar o Web Service no SOAMANAGER
 Acesse a transação SOAMANAGER.
@@ -20,9 +24,13 @@ Na interface do SOAMANAGER, selecione a opção de Configuração de Web Service
 Altere o filtro para contains e pesquise por Z* para localizar serviços específicos.
 Ao encontrar o Web Service desejado, volte à transação SE80.
 
+"----------------------------------------
+
 Passo 4: Configurações na SE80
 Na transação SE80, navegue até Package > Enterprise Services > Definições de Serviço > Konfiguration.
 Selecione a opção Authentication e defina como None (Nenhuma).
+
+"----------------------------------------
 
 Passo 5: Finalizar Configuração no SOAMANAGER
 Volte ao SOAMANAGER.
@@ -32,9 +40,4 @@ No Método de Autenticação, escolha ID do Usuário e Senha.
 Após estabelecer a ligação, clique no ícone ao lado do caminhão (ícone do arquivo XML) para exportar o arquivo XML.
 Salve o arquivo XML em um caminho conveniente para uso posterior.
 
-
-
-
-
-
-
+"----------------------------------------
