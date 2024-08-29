@@ -1,0 +1,20 @@
+    " DSA@SBX :: Aplicação de filtros do pedido
+    CALL METHOD /iwbep/cl_mgw_data_util=>filtering
+      EXPORTING
+        it_select_options = it_filter_select_options
+      CHANGING
+        ct_data           = et_entityset.
+
+**    " DSA@SBX :: Aplicação de ordenação do pedido
+**    CALL METHOD /iwbep/cl_mgw_data_util=>orderby
+**      EXPORTING
+**        it_order = it_order
+**      CHANGING
+**        ct_data  = et_entityset.
+**
+**    " DSA@SBX :: Aplicação de paginação do pedido
+**    CALL METHOD /iwbep/cl_mgw_data_util=>paging
+**      EXPORTING
+**        is_paging = is_paging
+**      CHANGING
+**        ct_data   = et_entityset.
