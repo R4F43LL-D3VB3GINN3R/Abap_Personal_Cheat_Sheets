@@ -1,1 +1,8 @@
-
+001 - Na barra superior de procura do vscode, digite >Fiori: Open Application Generator
+002 - Selecione Basic
+003 - Next
+004 - No Campo Data Source, selecione Connect to a System
+005 - Em System, selecione New System
+006 - Selecione o OData.
+007 - Nomeie a View
+008 - Clique com o botão direito na pasta do projeto para ele gerar a url e visualização da view.
