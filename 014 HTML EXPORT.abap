@@ -1,4 +1,4 @@
-REPORT ztemp002.
+REPORT ztemp002..
 
 " Declaração de tipos para a seleção de campos da tabela: Documento de vendas: dados de cabeçalho
 TYPES: BEGIN OF ty_vbak,
