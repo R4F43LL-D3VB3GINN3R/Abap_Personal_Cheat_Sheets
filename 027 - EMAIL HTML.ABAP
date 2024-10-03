@@ -38,7 +38,8 @@ start-of-selection.
                                 ev_subject   = data(lv_subject)
                                 ev_body_html = data(lv_body_html) ).
 
-    "--------------------------------------------------------------------------------------------
+  "--------------------------------------------------------------------------------------------
+  "PENSAMENTO LÓGICO PRINCIPAL
 
     data: stringtable type table of string.
 
@@ -93,52 +94,52 @@ start-of-selection.
 
     lv_body_html = main_part.
 
-    "--------------------------------------------------------------------------------------------
+  "--------------------------------------------------------------------------------------------
 
-    data(lv_body_html_soli) = cl_bcs_convert=>string_to_soli( lv_body_html ).
-    data(lo_multipart_ref) = new cl_gbt_multirelated_service( ).
+  data(lv_body_html_soli) = cl_bcs_convert=>string_to_soli( lv_body_html ).
+  data(lo_multipart_ref) = new cl_gbt_multirelated_service( ).
 
-    lo_multipart_ref->set_main_html(
-        exporting
-          content     = lv_body_html_soli
-          description = 'Dados dos Pacientes' ).
+  lo_multipart_ref->set_main_html(
+      exporting
+        content     = lv_body_html_soli
+        description = 'Dados dos Pacientes' ).
 
-    "substitui o html inicial pelo novo html tratado
-    data(lo_doc_bcs_ref) = cl_document_bcs=>create_from_multirelated(
-            exporting
-              i_subject          = conv so_obj_des( lv_subject )
-              i_importance       = lc_priority
-              i_multirel_service = lo_multipart_ref ).
+  "substitui o html inicial pelo novo html tratado
+  data(lo_doc_bcs_ref) = cl_document_bcs=>create_from_multirelated(
+          exporting
+            i_subject          = conv so_obj_des( lv_subject )
+            i_importance       = lc_priority
+            i_multirel_service = lo_multipart_ref ).
 
-    lo_send_request_ref->set_document( lo_doc_bcs_ref  ).
+  lo_send_request_ref->set_document( lo_doc_bcs_ref  ).
 
-    "insere o nome do remetente
-    data(lo_sender_ref) = cl_sapuser_bcs=>create( sy-uname ).
-    if lo_sender_ref is bound.
-      lo_send_request_ref->set_sender( i_sender = lo_sender_ref ).
-    endif.
+  "insere o nome do remetente
+  data(lo_sender_ref) = cl_sapuser_bcs=>create( sy-uname ).
+  if lo_sender_ref is bound.
+    lo_send_request_ref->set_sender( i_sender = lo_sender_ref ).
+  endif.
 
-    data(lo_recipient_ref) = cl_cam_address_bcs=>create_internet_address( p_email ).
+  data(lo_recipient_ref) = cl_cam_address_bcs=>create_internet_address( p_email ).
 
-    if lo_recipient_ref is bound.
+  if lo_recipient_ref is bound.
 
-      "adiciona o conteúdo à requisição
-      lo_send_request_ref->add_recipient(
-        exporting
-          i_recipient = lo_recipient_ref
-          i_express   = abap_true ).
-
-    endif.
-
-    "envia o email
-    data(lv_sent_to_all) = lo_send_request_ref->send( ).
-
-    "se o email for enviado, confirma a ação
-    if lv_sent_to_all = abap_true.
-      commit work and wait.
-    endif.
+    "adiciona o conteúdo à requisição
+    lo_send_request_ref->add_recipient(
+      exporting
+        i_recipient = lo_recipient_ref
+        i_express   = abap_true ).
 
   endif.
+
+  "envia o email
+  data(lv_sent_to_all) = lo_send_request_ref->send( ).
+
+  "se o email for enviado, confirma a ação
+  if lv_sent_to_all = abap_true.
+    commit work and wait.
+  endif.
+
+endif.
 
 
 "------------------------------------------------------------------------------------------------------------------------------------------------------
