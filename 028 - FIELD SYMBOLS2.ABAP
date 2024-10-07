@@ -16,10 +16,9 @@ IF  IS ASSIGNED.
 ENDIF.
 
 WRITE v_matnr.
+
 A vantagem principal é que você pode usar um mesmo field-symbol para alterar variáveis diferentes com a mesma linha de código. Como no exemplo abaixo:
-
 Sempre que você for atribuir valores a um Field-Symbol verifique antes se o mesmo foi realmente referenciado, através da consistência IS ASSIGNED. Se você tentar usar um Field Symbols que não foi corretamente referenciado, o programa irá gerar um DUMP! Você também pode desfazer a referência através do comando UNASSIGN <fs>.
-
 Mas qual a vantagem disso tudo? Elementar meu caro leitor: usar o mesmo field-symbol para alterar valores de campos diferentes! 😀
 
 REPORT zombie_assign.
