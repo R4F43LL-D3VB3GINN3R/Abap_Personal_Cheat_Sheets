@@ -17,9 +17,10 @@ ENDIF.
 
 WRITE v_matnr.
 
-A vantagem principal é que você pode usar um mesmo field-symbol para alterar variáveis diferentes com a mesma linha de código. Como no exemplo abaixo:
-Sempre que você for atribuir valores a um Field-Symbol verifique antes se o mesmo foi realmente referenciado, através da consistência IS ASSIGNED. Se você tentar usar um Field Symbols que não foi corretamente referenciado, o programa irá gerar um DUMP! Você também pode desfazer a referência através do comando UNASSIGN <fs>.
-Mas qual a vantagem disso tudo? Elementar meu caro leitor: usar o mesmo field-symbol para alterar valores de campos diferentes! 😀
+* A vantagem principal é que você pode usar um mesmo field-symbol para alterar variáveis diferentes com a mesma linha de código. Como no exemplo abaixo:
+* Sempre que você for atribuir valores a um Field-Symbol verifique antes se o mesmo foi realmente referenciado, através da consistência IS ASSIGNED. 
+* Se você tentar usar um Field Symbols que não foi corretamente referenciado, o programa irá gerar um DUMP! Você também pode desfazer a referência através do comando UNASSIGN <fs>.
+* Mas qual a vantagem disso tudo? Elementar meu caro leitor: usar o mesmo field-symbol para alterar valores de campos diferentes! 😀
 
 REPORT zombie_assign.
 
@@ -59,9 +60,9 @@ IF <fs_teste> IS ASSIGNED.
 ENDIF.
 
 WRITE <fs_teste>.
-O ASSIGN ainda tem mais coisas que podem ajudá-lo em diversos momentos. Vamos lá:
 
-– ASSIGN COMPONENT OF STRUCTURE: Ele permite que você associe num Field-Symbol um campo qualquer de uma estrutura. E você nem precisa saber o nome exato do campo, só a posição dele na sequência de declaração da estrutura. vejamos:
+* O ASSIGN ainda tem mais coisas que podem ajudá-lo em diversos momentos. Vamos lá:
+* ASSIGN COMPONENT OF STRUCTURE: Ele permite que você associe num Field-Symbol um campo qualquer de uma estrutura. E você nem precisa saber o nome exato do campo, só a posição dele na sequência de declaração da estrutura. vejamos:
 
 REPORT zombie_assign.
 
@@ -92,9 +93,9 @@ IF <fs_wa> IS ASSIGNED.
 ENDIF.
 
 WRITE <fs_wa>.
-– ASSIGN CASTING: Ele faz a mesma referência dos outros, mas o field-symbol mostra o valor do tipo que você usou no casting. Ou seja, você pode associar uma variável char à um field-symbol que irá mostrar o seu valor em hexadecimal.
 
-Isso é útil para achar e manipular caracteres especiais em strings, como quebras de linha e tabs indesejados (aqueles que aparecem como # no debug).
+* ASSIGN CASTING: Ele faz a mesma referência dos outros, mas o field-symbol mostra o valor do tipo que você usou no casting. Ou seja, você pode associar uma variável char à um field-symbol que irá mostrar o seu valor em hexadecimal.
+* Isso é útil para achar e manipular caracteres especiais em strings, como quebras de linha e tabs indesejados (aqueles que aparecem como # no debug).
 
 REPORT zombie_assign.
 
@@ -125,7 +126,7 @@ ASSIGN ('(SAPMV45A)XVBAP') TO <fs_tabela>.
 * Note que você pode usar as dicas do tópico do Novo Debugger
 * para navegar entre a pilha de programas carregados e verificar
 *as variáveis que estão na memória.
-– LOOP AsSIGNING / READ ASSIGNING: Você pode ainda associar uma estrutura durante um loop ou um read, economizando uma work area e alterando os valores direto na tabela. Eu uso muito isso para alterar valores na tabela em que estou dando um Loop:
+- LOOP AsSIGNING / READ ASSIGNING: Você pode ainda associar uma estrutura durante um loop ou um read, economizando uma work area e alterando os valores direto na tabela. Eu uso muito isso para alterar valores na tabela em que estou dando um Loop:
 
 REPORT zombie_assign.
 
