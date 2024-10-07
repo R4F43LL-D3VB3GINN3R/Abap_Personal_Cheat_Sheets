@@ -116,7 +116,7 @@ v_char = 'A'.
 *... o WRITE do Field-Symbol escreverá 41, que é o código em hexa do
 * A  maiusculo :)
 WRITE <fs_x>.
-– ASSIGN de variáveis de outros programas: Você pode associar a memória não só do seu programa, mas de qualquer outro programa carregado na memória da execução. Isso é muito usado em EXITs, BADIs e Enhancement Points, para a leitura de dados que nem sempre estão disponíveis na interface do FORM, Função ou método:
+* – ASSIGN de variáveis de outros programas: Você pode associar a memória não só do seu programa, mas de qualquer outro programa carregado na memória da execução. Isso é muito usado em EXITs, BADIs e Enhancement Points, para a leitura de dados que nem sempre estão disponíveis na interface do FORM, Função ou método:
 
 * Um exemplo simples de cada capturar valores de outros programas carregados na memória.
 * Neste caso, estou capturando o valor de uma tabela que está declarada no
@@ -126,7 +126,7 @@ ASSIGN ('(SAPMV45A)XVBAP') TO <fs_tabela>.
 * Note que você pode usar as dicas do tópico do Novo Debugger
 * para navegar entre a pilha de programas carregados e verificar
 *as variáveis que estão na memória.
-- LOOP AsSIGNING / READ ASSIGNING: Você pode ainda associar uma estrutura durante um loop ou um read, economizando uma work area e alterando os valores direto na tabela. Eu uso muito isso para alterar valores na tabela em que estou dando um Loop:
+* - LOOP AsSIGNING / READ ASSIGNING: Você pode ainda associar uma estrutura durante um loop ou um read, economizando uma work area e alterando os valores direto na tabela. Eu uso muito isso para alterar valores na tabela em que estou dando um Loop:
 
 REPORT zombie_assign.
 
