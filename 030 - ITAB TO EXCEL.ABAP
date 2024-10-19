@@ -8,21 +8,21 @@ class lca_excel_pro definition.
     data: o_xl type ref to zcl_excel.    "classe para manipulacao de excel
 
     methods:
-      convert_xstring,
-      download_xls
-        importing
-          filename type string.
+      convert_xstring, "converte tabela interna para xstring
+      download_xls.     "realiza download do arquivo excel
+*        importing
+*          filename type string.
 
   protected section.
 
   private section.
 
     methods:
-      append_extension
+      append_extension                       "prepara caminho para o arquivo com extensao
         importing old_extension type string
         exporting new_extension type string,
-      get_data,
-      get_file_directory
+      get_data,                              "consulta sql
+      get_file_directory                     "prepara o caminho para o arquivo
         importing
           filename type string
         exporting
@@ -38,9 +38,9 @@ class lca_excel_pro implementation.
           directory type string,
           fullpath  type string.
 
-    namefile = filename. " Nome base do arquivo
+    namefile = 'file'.
 
-    " Adiciona a extensão '.xlsx' ao nome do arquivo
+    "adiciona a extensão '.xlsx' ao nome do arquivo
     me->append_extension(
       exporting
         old_extension = namefile
@@ -48,27 +48,26 @@ class lca_excel_pro implementation.
         new_extension = namefile
     ).
 
-    " Diálogo para selecionar diretório e nome do arquivo
+    "diálogo para selecionar diretorio e nome do arquivo
     call method cl_gui_frontend_services=>file_save_dialog
       exporting
         default_extension = 'xlsx'
         default_file_name = namefile
       changing
-        filename          = namefile   " Nome final do arquivo escolhido
-        path              = directory  " Diretório escolhido
-        fullpath          = fullpath   " Caminho completo
+        filename          = namefile
+        path              = directory
+        fullpath          = fullpath
       exceptions
         others            = 1.
 
-    " Se o usuário não cancelar a operação
+    "se o user nao cancelar a operacao...
     if sy-subrc = 0.
-      concatenate directory namefile into fullpath separated by '\'. " Cria o caminho completo do arquivo
+      concatenate directory namefile into fullpath separated by '\'. "cria diretorio completo do arquivo
     else.
-      clear fullpath. " Caso o usuário cancele a operação
+      clear fullpath. "limpa o caminho
     endif.
 
-    " Retorna o caminho completo do arquivo
-    full_path = fullpath.
+    full_path = fullpath. "retorna caminho completo do arquivo
 
   endmethod.
 
@@ -82,7 +81,7 @@ class lca_excel_pro implementation.
 
     data(o_converter) = new zcl_excel_converter( ).
 
-    " Consulta a base de dados
+    "consulta a base de dados
     me->get_data( ).
 
     " Converte os dados para o formato Excel
@@ -93,7 +92,7 @@ class lca_excel_pro implementation.
         co_excel      = me->o_xl
     ).
 
-    " Tratamento de erros
+    "tratamento de erros
     if sy-subrc ne 0.
       message 'Não foi possível converter os dados para xstring' type 'S' display like 'E'.
       return.
@@ -105,13 +104,13 @@ class lca_excel_pro implementation.
 
     "----------------------------------------------------------------
 
-    " Tratamento de nome e extensão do arquivo
+    " tratamento de nome e extensão do arquivo
     data full_path type string.
     data namefile type string.
 
-    namefile = filename.
+    namefile = 'file'.
 
-    " Seleciona o diretório e o nome do arquivo a ser salvo
+    "metodo que salva nome e diretorio
     me->get_file_directory(
       exporting
         filename  = namefile
@@ -119,20 +118,20 @@ class lca_excel_pro implementation.
         full_path = full_path
     ).
 
+    "se o download for cancelado...
     if full_path is initial.
-      " Caso o usuário cancele a seleção, interrompe o processo
       message 'O download foi cancelado pelo usuário.' type 'S' display like 'E'.
       return.
     endif.
 
     "----------------------------------------------------------------
 
-    " Conversão para xstring
+    "converte dados para xstring
     me->convert_xstring( ).
 
     "----------------------------------------------------------------
 
-    " Download do arquivo
+    "download do arquivo
     data(o_xl_ws) = o_xl->get_active_worksheet( ).
     o_xl_ws->freeze_panes( ip_num_rows = 1 ).
 
@@ -140,10 +139,10 @@ class lca_excel_pro implementation.
     data(lv_xl_xdata) = o_xlwriter->write_file( o_xl ).
     data(it_raw_data) = cl_bcs_convert=>xstring_to_solix( exporting iv_xstring = lv_xl_xdata ).
 
-    " Método para realizar o download do arquivo xls
+    "download do arquivo xls
     cl_gui_frontend_services=>gui_download(
       exporting
-        filename    = full_path   " Caminho completo do arquivo
+        filename    = full_path
         filetype    = 'BIN'
         bin_filesize = xstrlen( lv_xl_xdata )
       changing
@@ -152,7 +151,7 @@ class lca_excel_pro implementation.
 
     "----------------------------------------------------------------
 
-    " Tratamento de erros
+    "tratamento de erros.
     if sy-subrc ne 0.
       message 'Não foi possível realizar o download do arquivo' type 'S' display like 'E'.
       return.
@@ -174,5 +173,5 @@ start-of-selection.
 
   create object ol_xls.
 
-  " Inicia o processo de download
-  ol_xls->download_xls( filename = 'novo_arquivo' ).
+  "download
+  ol_xls->download_xls(  ).
