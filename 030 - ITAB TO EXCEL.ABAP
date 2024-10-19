@@ -10,8 +10,6 @@ class lca_excel_pro definition.
     methods:
       convert_xstring, "converte tabela interna para xstring
       download_xls.     "realiza download do arquivo excel
-*        importing
-*          filename type string.
 
   protected section.
 
