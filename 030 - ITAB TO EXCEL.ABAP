@@ -1,6 +1,6 @@
 report zrla_test_excel.
 
-class lca_excel_pro definition.
+class lca_excel_pro definition  .
 
   public section.
 
