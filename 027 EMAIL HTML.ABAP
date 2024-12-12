@@ -12,7 +12,7 @@ constants: lc_priority    type bcs_docimp value '1',
 
 types: begin of wa_pct,
          id_paciente   type zpacientes-id_paciente,
-         nome_paciente type zpacientes-nome_paciente,
+         nome_paciente type zpacientes-nome_paciente,   
        end of wa_pct.
 
 data: it_paciente type table of wa_pct,
