@@ -20,7 +20,7 @@ class zcl_itab_to_html definition.
 
   protected section.
     types:
-      begin of t_table_description,
+      begin of t_table_description ,
         name        type string,
         title       type string,
         description type string,
