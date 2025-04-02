@@ -1,5 +1,5 @@
 
-DATA: LV_IDMSG      TYPE SY-MSGID, "ID of the Messages Program"
+DATA: LV_IDMSG      TYPE SY-MSGID, "ID of the Messages Program "
       LV_NUMMSG     TYPE SY-MSGNO, "Message's Number"
       LV_TYMSG      TYPE SY-MSGTY, "Message's Type"
       LV_TYMSG2     TYPE SY-MSGV1, "Message's Text"
